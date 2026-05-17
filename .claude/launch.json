@@ -6,7 +6,7 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "cwd": "backend",
-      "port": 3000
+      "port": 3333
     },
     {
       "name": "FERB Frontend (Vite + React)",

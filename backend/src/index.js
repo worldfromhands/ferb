@@ -6,10 +6,11 @@ const cors             = require('cors');
 const errorHandler     = require('./middleware/errorHandler');
 const placeholderRoutes = require('./routes/placeholder');
 
-const homeRoutes      = require('./routes/home');
-const audienceRoutes  = require('./routes/audience');
-const relationsRoutes = require('./routes/relations');
-const executionRoutes = require('./routes/execution');
+const homeRoutes       = require('./routes/home');
+const audienceRoutes   = require('./routes/audience');
+const relationsRoutes  = require('./routes/relations');
+const executionRoutes  = require('./routes/execution');
+const instagramRoutes  = require('./routes/instagram');
 
 const app  = express();
 const PORT = process.env.PORT || 3333;
@@ -23,6 +24,7 @@ app.get('/health', (req, res) => {
 
 // Fase 1
 app.use('/api/home',      homeRoutes);
+app.use('/api/instagram', instagramRoutes);
 app.use('/api/audience',  audienceRoutes);
 app.use('/api/relations', relationsRoutes);
 app.use('/api/execution', executionRoutes);
