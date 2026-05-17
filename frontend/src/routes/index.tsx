@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
-  ArrowUpRight, ArrowDownRight, Sparkles, AlertTriangle,
-  CheckCircle2, Clock, RefreshCw, Loader2,
+  ArrowUpRight, ArrowDownRight, Sparkles,
+  CheckCircle2, Clock, RefreshCw, Loader2, Eye,
 } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import { GlassCard, Badge } from "@/components/GlassCard";
@@ -89,8 +89,8 @@ function Home() {
           <p className="text-text-dim text-sm uppercase tracking-[0.18em] mb-4">{todayLabel()}</p>
           <h1 className="text-white max-w-3xl">
             {isLoading
-              ? "Carregando seu painel..."
-              : "Bom dia. Aqui está o que precisa da sua atenção hoje."}
+              ? "Lendo o momento..."
+              : "Bom dia. O que o dia está pedindo de você."}
           </h1>
         </div>
         <button
@@ -118,7 +118,7 @@ function Home() {
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-primary text-[13px] font-semibold uppercase tracking-wider">
-                  FERB acha que
+                  Leitura do momento
                 </span>
                 {report?.generatedAt && (
                   <Badge>
@@ -156,11 +156,14 @@ function Home() {
       {/* ── Fotos Instagram ── */}
       <ArtistPhotos username="kyanmaloka" artistName="Kyan Maloka" />
 
-      {/* ── Crítico hoje ── */}
+      {/* ── Pontos de tensão ── */}
       {(criticos.length > 0 || isLoading) && (
         <section className="mb-16">
           <div className="flex items-end justify-between mb-8">
-            <h2 className="text-white">Crítico hoje</h2>
+            <div>
+              <h2 className="text-white">Pontos de tensão</h2>
+              <p className="text-text-dim text-[13px] mt-1">Onde a energia está represada</p>
+            </div>
           </div>
           <GlassCard className="p-0 overflow-hidden">
             {isLoading ? (
@@ -185,7 +188,7 @@ function Home() {
                       <div className="flex-1 min-w-0">
                         <p className="text-white text-[15px] font-medium truncate">{c.message}</p>
                       </div>
-                      <AlertTriangle className="h-4 w-4 text-text-dim shrink-0" />
+                      <Eye className="h-4 w-4 text-text-dim shrink-0" />
                     </li>
                   );
                 })}
@@ -261,7 +264,7 @@ function Home() {
                       <span className="flex-1 text-[15px] text-white">{t.title}</span>
                       {high && (
                         <span className="inline-flex items-center gap-1 text-[11px] text-primary font-medium uppercase tracking-wide">
-                          <Clock className="h-3 w-3" /> urgente
+                          <Clock className="h-3 w-3" /> agora
                         </span>
                       )}
                     </li>
@@ -278,7 +281,7 @@ function Home() {
                 <Sparkles className="h-5 w-5 text-primary" />
                 <h2 className="text-white text-[22px] font-semibold">Oportunidades</h2>
               </div>
-              <Badge>FERB detectou</Badge>
+              <Badge>FERB vê</Badge>
             </div>
             {isLoading ? (
               <SkeletonList rows={3} compact />

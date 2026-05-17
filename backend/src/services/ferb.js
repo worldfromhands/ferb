@@ -9,7 +9,7 @@ async function gerarSummary(metricas) {
   }).join('\n');
 
   const sys = buildSystemPrompt({ name: 'KYAN' });
-  const prompt = `Dados atuais do KYAN no Chartmetric:\n${linhas}\n\nFaca uma analise de 2-3 frases. NAO use markdown, asteriscos ou negrito. Texto puro apenas. Identifique o padrao principal, diga o que esta acontecendo e o que ele deve focar AGORA.`;
+  const prompt = `Dados atuais do KYAN no Chartmetric:\n${linhas}\n\nLeia esses dados como um artista le uma obra em progresso. Em 2-3 frases, diga o que o movimento desses numeros esta revelando sobre o momento artistico do KYAN e aponte a direcao natural que emerge desse padrao. NAO use markdown, asteriscos ou negrito. Texto puro apenas.`;
   return await ask(sys, prompt);
 }
 
