@@ -1,0 +1,246 @@
+═══════════════════════════════════════════════════════════════════
+PROMPT PARA CLAUDE CODE - FERB SETUP
+═══════════════════════════════════════════════════════════════════
+
+Você é um desenvolvedor experiente criando estrutura para novo projeto.
+
+CONTEXTO DO PROJETO:
+- Nome: FERB
+- Usuário: KYAN (artista consolidado em música)
+- Descrição: Agente IA que me cobra todo dia e me diz o que fazer
+- Stack: Node.js + Express + React + PostgreSQL + Claude API
+- Timeline: 4 semanas até estar rodando
+
+TAREFA 1: CRIAR ESTRUTURA DE PASTAS
+
+Crie EXATAMENTE essa estrutura:
+
+backend/
+  src/
+    index.js
+    routes/
+    controllers/
+    services/
+    utils/
+    middleware/
+  package.json
+
+frontend/
+  src/
+    components/
+    pages/
+    services/
+
+docs/
+
+root/
+  .env.example
+  .gitignore
+  README.md
+
+═══════════════════════════════════════════════════════════════════
+
+TAREFA 2: CRIAR ARQUIVO .env.example
+
+Conteúdo:
+# CHARTMETRIC
+CHARTMETRIC_API_KEY=sua_api_key_aqui
+
+# GOOGLE SHEETS (Para depois)
+GOOGLE_SHEETS_API_KEY=sua_chave_aqui
+
+# CLAUDE API (Para depois)
+CLAUDE_API_KEY=sua_chave_aqui
+
+# DATABASE (Para depois)
+DATABASE_URL=postgresql://user:password@localhost:5432/ferb
+
+# SERVER
+PORT=3000
+NODE_ENV=development
+
+═══════════════════════════════════════════════════════════════════
+
+TAREFA 3: CRIAR ARQUIVO README.md
+
+Conteúdo em markdown:
+
+# 🤖 FERB - Meu Mestre de Obra
+
+Agente IA que me cobra todo dia, analisa meus dados musicais e me diz o que fazer.
+
+## 👨‍🎤 Quem sou
+KYAN - Artista consolidado em música
+
+## 🎯 O que é FERB?
+Um agente que:
+- ✅ Roda TODOS OS DIAS de manhã às 6:30 AM
+- ✅ Puxa dados do Chartmetric
+- ✅ Analisa tarefas, contatos, financeiro
+- ✅ Te diz EXATAMENTE o que fazer
+- ✅ Te cobra se você não fazer
+
+## 📊 Stack
+- Frontend: React 18 + TypeScript
+- Backend: Node.js + Express
+- Database: PostgreSQL (semana 2)
+- IA: Claude API (semana 3)
+- Deploy: DigitalOcean
+
+## 🚀 Timeline
+- Semana 1: Setup + React basics + Node basics
+- Semana 2: Backend + Chartmetric integration
+- Semana 3: Cronjobs + Google Sheets
+- Semana 4: Claude API + Deploy
+
+## 📅 Status
+🟡 Em desenvolvimento
+
+## 🔐 Segurança
+- .env nunca fazer commit
+- API keys em segurança
+- Dados financeiros encrypted (depois)
+
+═══════════════════════════════════════════════════════════════════
+
+TAREFA 4: CRIAR ARQUIVO backend/package.json
+
+Conteúdo:
+{
+  "name": "ferb-backend",
+  "version": "1.0.0",
+  "description": "FERB - Agente que me cobra todo dia",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["ferb", "agent", "music", "kyan"],
+  "author": "KYAN",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.1",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
+
+═══════════════════════════════════════════════════════════════════
+
+TAREFA 5: CRIAR ARQUIVO backend/src/index.js
+
+Conteúdo:
+// FERB - Backend Server
+// Agente que me cobra todo dia
+
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(express.json());
+app.use(cors());
+
+// Health check - verifica se servidor está rodando
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'FERB está vivo! 🤖',
+    timestamp: new Date()
+  });
+});
+
+// Placeholder - dados do Chartmetric virão aqui
+app.get('/api/artist', (req, res) => {
+  res.json({
+    message: 'Dados do Chartmetric',
+    status: 'Conectando na próxima tarefa',
+    streams: 0,
+    listeners: 0
+  });
+});
+
+// Iniciar servidor
+app.listen(PORT, () => {
+  console.log(`🚀 FERB backend rodando em http://localhost:${PORT}`);
+  console.log(`Teste: curl http://localhost:${PORT}/health`);
+});
+
+═══════════════════════════════════════════════════════════════════
+
+TAREFA 6: CRIAR ARQUIVO .gitignore
+
+Conteúdo:
+# Dependencies
+node_modules/
+/frontend/node_modules
+/backend/node_modules
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# Build
+/frontend/build
+/frontend/dist
+/backend/dist
+
+# Logs
+*.log
+npm-debug.log*
+
+═══════════════════════════════════════════════════════════════════
+
+TAREFA 7: GIT COMMIT INICIAL
+
+Depois de criar todos os arquivos, execute:
+
+cd [seu-repo-local]
+git add .
+git commit -m "Initial setup: FERB project structure
+
+- Created backend/frontend folder structure
+- Added Express server with health check
+- Added .env.example for configuration
+- Added .gitignore
+- Added README with project description"
+git push origin main
+
+═══════════════════════════════════════════════════════════════════
+
+REQUISITOS:
+- ✅ Todos os arquivos em português (comentários)
+- ✅ Estrutura pronta para expandir
+- ✅ Express rodando e testável
+- ✅ Package.json com dependências corretas
+- ✅ .gitignore correto
+- ✅ README completo
+
+QUANDO TERMINAR:
+1. Mostrar confirmação de que tudo foi criado
+2. Mostrar os comandos para testar:
+   - npm install
+   - npm run dev
+3. Confirmar que está pronto para próxima etapa
+
+═══════════════════════════════════════════════════════════════════

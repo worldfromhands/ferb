@@ -1,0 +1,414 @@
+═══════════════════════════════════════════════════════════════════
+DESIGN SYSTEM FERB - ESTÉTICA APPLE
+═══════════════════════════════════════════════════════════════════
+
+CONCEITO:
+- Minimalista extremo
+- Muito espaço em branco
+- Tipografia limpa e hierárquica
+- Animações suaves
+- Logo EHXIS em corner (watermark)
+- Dark mode por padrão
+- Transições fluidas
+
+═══════════════════════════════════════════════════════════════════
+
+PALETA DE CORES
+
+Primary Colors:
+- Background: #0A0A0A (preto ultra-dark)
+- Surface: #1A1A1A (cinza-escuro)
+- Accent: #667eea (roxo - seu gradient)
+- Accent 2: #764ba2 (roxo secundário)
+
+Text Colors:
+- Primary text: #FFFFFF (branco puro)
+- Secondary text: #A0A0A0 (cinza médio)
+- Tertiary text: #707070 (cinza escuro)
+
+Backgrounds:
+- Page bg: #0A0A0A
+- Card bg: #1A1A1A
+- Hover bg: #2A2A2A
+
+Accent Gradient:
+- linear-gradient(135deg, #667eea 0%, #764ba2 100%)
+
+═══════════════════════════════════════════════════════════════════
+
+TIPOGRAFIA (Apple-style)
+
+Font Family: 
+- Headings: -apple-system, BlinkMacSystemFont, "Segoe UI"
+- Body: -apple-system, BlinkMacSystemFont, "Segoe UI"
+- Monospace: "SF Mono", Monaco, monospace
+
+Sizes:
+- H1: 48px (bold)
+- H2: 36px (bold)
+- H3: 28px (semibold)
+- H4: 20px (semibold)
+- Body: 16px (regular)
+- Small: 14px (regular)
+- Caption: 12px (regular)
+
+Letter Spacing:
+- H1/H2: -0.02em (tight)
+- H3/H4: -0.01em (normal)
+- Body: 0em
+
+Line Height:
+- Headlines: 1.2
+- Body: 1.6
+- Compact: 1.4
+
+═══════════════════════════════════════════════════════════════════
+
+SPACING (8px grid)
+
+Micro: 4px
+Extra Small: 8px
+Small: 12px
+Medium: 16px
+Large: 24px
+Extra Large: 32px
+Huge: 48px
+
+Padding padrão:
+- Sections: 48px vertical, 24px horizontal
+- Cards: 24px
+- Elements: 12px-16px
+
+═══════════════════════════════════════════════════════════════════
+
+COMPONENTES APPLE-STYLE
+
+1. BUTTONS
+
+Primary Button:
+- Background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)
+- Color: white
+- Padding: 12px 32px
+- Border-radius: 10px
+- Font-size: 16px
+- Font-weight: 500
+- Border: none
+- Cursor: pointer
+- Transition: all 0.3s ease
+- Hover: 
+  - Transform: scale(1.02)
+  - Box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3)
+- Active:
+  - Transform: scale(0.98)
+
+Secondary Button:
+- Background: transparent
+- Color: #667eea
+- Border: 1px solid #667eea
+- Padding: 12px 32px
+- Border-radius: 10px
+- Hover:
+  - Background: rgba(102, 126, 234, 0.1)
+
+Text Button:
+- Background: transparent
+- Color: #667eea
+- Border: none
+- Padding: 8px 0
+- Text-decoration: underline
+- Hover:
+  - Opacity: 0.8
+
+2. CARDS
+
+Card Base:
+- Background: #1A1A1A
+- Border-radius: 16px
+- Padding: 24px
+- Border: 1px solid rgba(255, 255, 255, 0.1)
+- Box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3)
+- Transition: all 0.3s ease
+- Hover:
+  - Transform: translateY(-4px)
+  - Box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5)
+  - Border-color: rgba(102, 126, 234, 0.5)
+
+3. INPUTS
+
+Input Field:
+- Background: #2A2A2A
+- Color: #FFFFFF
+- Border: 1px solid #3A3A3A
+- Border-radius: 10px
+- Padding: 12px 16px
+- Font-size: 16px
+- Transition: all 0.3s ease
+- Focus:
+  - Border-color: #667eea
+  - Box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1)
+
+4. MODALS
+
+Modal Overlay:
+- Background: rgba(0, 0, 0, 0.7)
+- Backdrop-filter: blur(10px)
+
+Modal Content:
+- Background: #1A1A1A
+- Border-radius: 20px
+- Padding: 32px
+- Max-width: 600px
+- Animation: scale(0.95) → scale(1) com 0.3s
+
+═══════════════════════════════════════════════════════════════════
+
+LAYOUT PRINCIPLES
+
+Hero Section:
+- Full height (100vh ou min(100vh, 600px))
+- Center content verticalmente
+- Muita respiração (whitespace)
+- Headline grande + subtitle + CTA
+
+Section Padding:
+- Mobile: 32px 16px
+- Tablet: 48px 24px
+- Desktop: 64px 48px
+
+Grid System:
+- Desktop: 12 colunas (100% width / 12)
+- Tablet: 8 colunas
+- Mobile: 4 colunas
+- Gap: 24px
+
+═══════════════════════════════════════════════════════════════════
+
+ANIMAÇÕES (Apple-style)
+
+Transitions padrão:
+- Fast: 0.2s ease
+- Normal: 0.3s ease
+- Slow: 0.5s ease
+
+Common animations:
+1. Fade In (entrada página):
+   opacity: 0 → 1 (0.3s)
+
+2. Slide Up (cards):
+   transform: translateY(20px) → translateY(0) (0.3s)
+
+3. Scale (hover):
+   transform: scale(1) → scale(1.02) (0.3s)
+
+4. Glow (interactive):
+   box-shadow: none → glow (0.3s)
+
+Easing: cubic-bezier(0.25, 0.46, 0.45, 0.94)
+
+═══════════════════════════════════════════════════════════════════
+
+LOGO WATERMARK (EHXIS)
+
+Placement Options:
+
+Option 1 - Bottom Right Corner (RECOMENDADO):
+- Position: fixed
+- Bottom: 24px
+- Right: 24px
+- Opacity: 0.3
+- Size: 40px × 40px
+- Hover: opacity 0.6 (smooth transition)
+
+Option 2 - Top Right Corner:
+- Position: fixed
+- Top: 24px
+- Right: 24px
+- Opacity: 0.25
+- Size: 36px × 36px
+
+Option 3 - Inline (footer):
+- Integrated no footer
+- Size: 32px × 32px
+- Opacity: 0.4
+
+Hover Effect (todos):
+- Transition opacity: 0.3s ease
+- Cursor: pointer (link para home)
+
+Implementation (CSS):
+```css
+.logo-watermark {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  opacity: 0.3;
+  transition: all 0.3s ease;
+  z-index: 10;
+  cursor: pointer;
+  background: url('/ehxis-logo.svg') no-repeat center;
+  background-size: contain;
+}
+
+.logo-watermark:hover {
+  opacity: 0.6;
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .logo-watermark {
+    bottom: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+  }
+}
+```
+
+═══════════════════════════════════════════════════════════════════
+
+RESPONSIVE DESIGN
+
+Mobile First:
+- Base: 375px width (iPhone)
+- Tablet: 768px width
+- Desktop: 1024px+ width
+
+Breakpoints:
+- sm: 375px
+- md: 768px
+- lg: 1024px
+- xl: 1440px
+- 2xl: 1920px
+
+Mobile Adjustments:
+- Font sizes: 10-15% menor
+- Padding: 50% do desktop
+- Cards: full-width or 100% width
+- Hero: min-height 60vh
+
+═══════════════════════════════════════════════════════════════════
+
+ESTRUTURA DE PÁGINA PADRÃO
+
+Header:
+- Sticky position
+- Background: rgba(10, 10, 10, 0.8) com backdrop-filter blur
+- Padding: 16px 24px
+- Flex: space-between
+- Left: Logo (apenas favicon ou mini)
+- Right: Nav links + User menu
+
+Hero:
+- Min-height: 80vh
+- Flex center
+- Heading: H1 48px bold
+- Subtitle: Body 16px, secondary text color
+- CTA: Button primary
+- Whitespace: 48px+ em volta
+
+Section:
+- Padding: 64px 48px (desktop)
+- Heading: H2 36px bold
+- Content: Cards em grid
+- Spacing: 24px gap
+
+Footer:
+- Background: #1A1A1A
+- Padding: 48px 24px
+- Grid: 4 colunas (links, produtos, legal, social)
+- Border-top: 1px rgba(255, 255, 255, 0.1)
+
+═══════════════════════════════════════════════════════════════════
+
+SHADOWS & DEPTH
+
+No Shadow (minimal):
+- Cards at rest: box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3)
+
+Medium Shadow (hover):
+- Cards hovered: box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5)
+
+Strong Shadow (elevated):
+- Modals: box-shadow: 0 50px 100px rgba(0, 0, 0, 0.7)
+
+Subtle Glow (accent):
+- Focus states: box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2)
+
+═══════════════════════════════════════════════════════════════════
+
+DARK MODE (DEFAULT)
+
+Sempre dark por padrão, sem toggle necessário
+
+Colors (já listadas acima):
+- Text: white
+- Backgrounds: blacks/dark grays
+- Borders: subtle white 10% opacity
+- Accents: gradiente roxo
+
+═══════════════════════════════════════════════════════════════════
+
+CSS GLOBAL STRUCTURE
+
+```css
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #0A0A0A;
+  color: #FFFFFF;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI";
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography */
+h1 { font-size: 48px; font-weight: bold; letter-spacing: -0.02em; }
+h2 { font-size: 36px; font-weight: bold; letter-spacing: -0.02em; }
+h3 { font-size: 28px; font-weight: 600; letter-spacing: -0.01em; }
+h4 { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+p { font-size: 16px; color: #A0A0A0; }
+small { font-size: 14px; color: #707070; }
+
+/* Sections */
+section {
+  padding: 64px 48px;
+}
+
+@media (max-width: 768px) {
+  section {
+    padding: 48px 24px;
+  }
+}
+
+/* Spacing utilities */
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.mb-8 { margin-bottom: 8px; }
+/* etc... */
+```
+
+═══════════════════════════════════════════════════════════════════
+
+COMO USAR NO COWORK
+
+Quando pedir para criar componentes, inclua:
+"Use o Design System FERB:
+- Dark background (#0A0A0A)
+- Purple gradient accent (#667eea to #764ba2)
+- Apple-style spacing (8px grid)
+- Smooth transitions (0.3s ease)
+- Logo watermark bottom-right (opacity 0.3)
+- No harsh shadows, subtle depth
+- Minimalista extremo"
+
+═══════════════════════════════════════════════════════════════════
