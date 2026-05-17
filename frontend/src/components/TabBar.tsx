@@ -17,9 +17,8 @@ export function TabBar() {
   return (
     <header className="sticky top-0 z-40 tab-blur border-b border-white/8">
       <div className="flex items-center gap-6 px-8 h-16">
-        <div className="flex items-center gap-3 shrink-0">
-          <MotionLogo size={28} autoPlay={true} interactive={true} />
-          <span className="text-white font-semibold tracking-tight text-[15px]">FERB</span>
+        <div className="flex items-center shrink-0">
+          <MotionLogo size={46} autoPlay={true} interactive={true} noShadow />
         </div>
         <nav className="flex-1 overflow-x-auto scrollbar-none">
           <ul className="flex items-center gap-1 min-w-max">
