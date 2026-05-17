@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { EhxisLogo } from "./EhxisLogo";
+import { MotionLogo } from "./MotionLogo";
 
 const tabs = [
   { label: "Home", to: "/" },
@@ -18,7 +18,7 @@ export function TabBar() {
     <header className="sticky top-0 z-40 tab-blur border-b border-white/8">
       <div className="flex items-center gap-6 px-8 h-16">
         <div className="flex items-center gap-3 shrink-0">
-          <EhxisLogo className="h-5 w-[52px]" color="#ffffff" />
+          <MotionLogo size={28} autoPlay={true} interactive={true} />
           <span className="text-white font-semibold tracking-tight text-[15px]">FERB</span>
         </div>
         <nav className="flex-1 overflow-x-auto scrollbar-none">
