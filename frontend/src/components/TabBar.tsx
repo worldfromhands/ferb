@@ -2,14 +2,13 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { MotionLogo } from "./MotionLogo";
 
 const tabs = [
-  { label: "Home", to: "/" },
-  { label: "Crítico", to: "/critico" },
-  { label: "Dados", to: "/dados" },
-  { label: "Tarefas", to: "/tarefas" },
-  { label: "Oportunidades", to: "/oportunidades" },
-  { label: "Catálogo", to: "/catalogo" },
-  { label: "Relatórios", to: "/relatorios" },
-  { label: "Ajustes", to: "/ajustes" },
+  { label: "Home",      to: "/" },
+  { label: "Agência",   to: "/agencia" },
+  { label: "Crítico",   to: "/critico" },
+  { label: "Dados",     to: "/dados" },
+  { label: "Tarefas",   to: "/tarefas" },
+  { label: "Catálogo",  to: "/catalogo" },
+  { label: "Relatórios",to: "/relatorios" },
 ];
 
 export function TabBar() {

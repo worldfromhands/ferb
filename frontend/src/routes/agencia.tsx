@@ -1,0 +1,106 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
+import { Shell } from "@/components/Shell";
+import { AgentCard } from "@/components/agency/AgentCard";
+import { AgentRoom } from "@/components/agency/AgentRoom";
+import "@/styles/agency.css";
+
+export const Route = createFileRoute("/agencia")({
+  component: Agency,
+});
+
+interface Agent {
+  id: string;
+  name: string;
+  title: string;
+  specialty: string;
+  bio: string;
+  avatar: string;
+  color: string;
+  room: string;
+  mood: string;
+  activeDemand?: { title: string } | null;
+  demands?: unknown[];
+}
+
+function Agency() {
+  const [agents,       setAgents]       = useState<Agent[]>([]);
+  const [loading,      setLoading]      = useState(true);
+  const [error,        setError]        = useState<string | null>(null);
+  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+
+  async function loadLobby() {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await fetch("/api/mvp/lobby/kyan");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setAgents(await res.json());
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Erro ao carregar agência");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    loadLobby();
+    // Atualiza moods a cada 3s
+    const iv = setInterval(loadLobby, 3000);
+    return () => clearInterval(iv);
+  }, []);
+
+  if (selectedAgent) {
+    return (
+      <Shell>
+        <AgentRoom
+          initialAgent={selectedAgent as Parameters<typeof AgentRoom>[0]['initialAgent']}
+          onBack={() => {
+            setSelectedAgent(null);
+            loadLobby();
+          }}
+        />
+      </Shell>
+    );
+  }
+
+  return (
+    <Shell>
+      <section className="mb-10">
+        <p className="text-text-dim text-sm uppercase tracking-[0.18em] mb-3">Agência Virtual</p>
+        <h1 className="text-white">Sua equipe está aqui.</h1>
+        <p className="text-text-dim text-[15px] mt-2">
+          Entre na sala de cada agente, dê demandas e receba respostas.
+        </p>
+      </section>
+
+      {loading && agents.length === 0 ? (
+        <div className="agents-grid">
+          {Array.from({ length: 9 }).map((_, i) => (
+            <div key={i} className="agent-card-skeleton" />
+          ))}
+        </div>
+      ) : error ? (
+        <div className="glass rounded-2xl p-8 text-center">
+          <p className="text-white mb-4">Não consegui conectar com a agência.</p>
+          <button
+            className="btn-primary-sm"
+            onClick={loadLobby}
+          >
+            Tentar novamente
+          </button>
+        </div>
+      ) : (
+        <div className="agents-grid">
+          {agents.map(agent => (
+            <AgentCard
+              key={agent.id}
+              agent={agent}
+              onClick={() => setSelectedAgent(agent)}
+            />
+          ))}
+        </div>
+      )}
+    </Shell>
+  );
+}

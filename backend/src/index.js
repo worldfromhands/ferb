@@ -11,6 +11,7 @@ const audienceRoutes   = require('./routes/audience');
 const relationsRoutes  = require('./routes/relations');
 const executionRoutes  = require('./routes/execution');
 const instagramRoutes  = require('./routes/instagram');
+const mvpRoutes        = require('./routes/mvp');
 
 const app  = express();
 const PORT = process.env.PORT || 3333;
@@ -28,6 +29,8 @@ app.use('/api/instagram', instagramRoutes);
 app.use('/api/audience',  audienceRoutes);
 app.use('/api/relations', relationsRoutes);
 app.use('/api/execution', executionRoutes);
+
+app.use('/api/mvp',       mvpRoutes);
 
 // Fase 2/3 — placeholder
 app.use('/api/movement',      placeholderRoutes('MOVIMENTO'));
