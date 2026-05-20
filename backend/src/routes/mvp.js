@@ -187,7 +187,9 @@ Descrição: "${description}"
 Prioridade: ${priority}
 Prazo: ${dueDate || 'Sem prazo definido'}
 
-Responda confirmando que entendeu, como vai abordar e quando pode entregar. Seja conciso e direto — sua voz, seu estilo.`;
+Responda confirmando que entendeu, como vai abordar e quando pode entregar. Seja conciso e direto — sua voz, seu estilo.
+
+FORMATO OBRIGATÓRIO: texto corrido, sem asteriscos, sem negrito, sem emojis, sem marcadores. Só texto puro.`;
 
     const agentResponse = await ask(systemPrompt, userPrompt);
 
