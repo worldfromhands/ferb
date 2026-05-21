@@ -1,6 +1,7 @@
 const express = require('express');
 const { ask } = require('../services/claudeService');
 const { AGENT_SYSTEM_PROMPTS } = require('../agents/agentPrompts');
+const { buildAgentContext } = require('../agents/agentContext');
 
 const router = express.Router();
 
@@ -178,8 +179,11 @@ router.post('/demand/:agentId', async (req, res, next) => {
     // Agente entra em modo "thinking"
     moodStore.set(agentId, 'thinking');
 
-    // Chamar Claude com a persona do agente
-    const systemPrompt = AGENT_SYSTEM_PROMPTS[agentId] || AGENT_SYSTEM_PROMPTS.manager;
+    // Chamar Claude com a persona do agente + contexto real do KYAN
+    const basePersona = AGENT_SYSTEM_PROMPTS[agentId] || AGENT_SYSTEM_PROMPTS.manager;
+    const context     = await buildAgentContext(agentId);
+    const systemPrompt = basePersona + context;
+
     const userPrompt = `Você recebeu uma demanda:
 
 Título: "${title}"
@@ -187,7 +191,7 @@ Descrição: "${description}"
 Prioridade: ${priority}
 Prazo: ${dueDate || 'Sem prazo definido'}
 
-Responda confirmando que entendeu, como vai abordar e quando pode entregar. Seja conciso e direto — sua voz, seu estilo.
+Responda confirmando que entendeu, como vai abordar e quando pode entregar — use os dados reais do KYAN do seu contexto para fundamentar a resposta. Seja conciso, direto e específico.
 
 FORMATO OBRIGATÓRIO: texto corrido, sem asteriscos, sem negrito, sem emojis, sem marcadores. Só texto puro.`;
 
@@ -230,26 +234,21 @@ router.get('/demands/:agentId', (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────
-// 5. MAPA REGIONAL (mock — conectar Chartmetric depois)
+// 5. MAPA REGIONAL (REAL — Chartmetric)
 // ─────────────────────────────────────────────────────
 
-router.get('/map/:artistId', (req, res) => {
-  const REGIONAL = {
-    SP: { listeners: 500000, streams: 2500000, trend: '+5%',  level: 'high'   },
-    RJ: { listeners: 300000, streams: 1500000, trend: '+12%', level: 'high'   },
-    MG: { listeners: 200000, streams: 1000000, trend: '+3%',  level: 'medium' },
-    BA: { listeners: 150000, streams: 750000,  trend: '+8%',  level: 'medium' },
-    RS: { listeners: 120000, streams: 600000,  trend: '+2%',  level: 'medium' },
-    PR: { listeners: 100000, streams: 500000,  trend: '+6%',  level: 'medium' },
-    SC: { listeners:  80000, streams: 400000,  trend: '-1%',  level: 'low'    },
-    GO: { listeners:  70000, streams: 350000,  trend: '+4%',  level: 'low'    },
-    DF: { listeners:  60000, streams: 300000,  trend: '+1%',  level: 'low'    },
-    PE: { listeners:  55000, streams: 275000,  trend: '+7%',  level: 'low'    },
-    CE: { listeners:  45000, streams: 225000,  trend: '+3%',  level: 'low'    },
-    AM: { listeners:  30000, streams: 150000,  trend: '+2%',  level: 'low'    },
-    PA: { listeners:  28000, streams: 140000,  trend: '+5%',  level: 'low'    },
-  };
-  res.json(REGIONAL);
+const cm = require('../services/chartmetric');
+
+router.get('/map/:artistId', async (req, res, next) => {
+  try {
+    const [cities, countries] = await Promise.all([
+      cm.getTopCities(undefined, 20),
+      cm.getTopCountries(undefined, 15),
+    ]);
+    res.json({ cities, countries });
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;
