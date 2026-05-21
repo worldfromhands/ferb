@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   ArrowUpRight, ArrowDownRight, Sparkles, CheckCircle2,
   Clock, RefreshCw, Loader2, Eye, MapPin, Disc3, ListMusic,
-  Users, Globe, TrendingDown, TrendingUp,
+  Users, Globe, TrendingDown, TrendingUp, Youtube as YoutubeIcon,
 } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import { GlassCard, Badge } from "@/components/GlassCard";
@@ -47,6 +47,17 @@ interface AudienceMetric { group: string; label: string; value: number; delta: n
 interface PendingTask   { title: string; priority?: string }
 interface Opportunity   { title: string; description?: string }
 
+interface YouTubeVideo {
+  id: string; title: string; thumbnail?: string;
+  views?: number; likes?: number; comments?: number;
+  publishedAt?: string; url?: string;
+}
+interface YouTubeChannel {
+  title?: string; thumbnail?: string; banner?: string;
+  subscribers?: number; views?: number; videos?: number;
+}
+interface YouTubeSnapshot { channel?: YouTubeChannel | null; videos?: YouTubeVideo[] }
+
 interface HomeReport {
   summary?: string;
   overallStatus?: string;
@@ -62,6 +73,8 @@ interface HomeReport {
   spotifyTopTracks?: SpotifyTrack[];
   spotifyArtist?: { followers?: number; popularity?: number; genres?: string[] } | null;
   spotifyConfigured?: boolean;
+  youtube?: YouTubeSnapshot | null;
+  youtubeConfigured?: boolean;
   pendingTasks?: PendingTask[];
   opportunities?: Opportunity[];
   generatedAt?: string;
@@ -400,6 +413,50 @@ function Home() {
               </a>
             ))}
           </div>
+        </section>
+      )}
+
+      {/* ── BLOCO 7b: YOUTUBE ── */}
+      {report?.youtube?.channel && (
+        <section className="mb-16">
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <h2 className="text-white">YouTube</h2>
+              <p className="text-text-dim text-[13px] mt-1">{report.youtube.channel.title}</p>
+            </div>
+            <YoutubeIcon className="h-5 w-5 text-text-dim" />
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <GlassCard className="!p-5">
+              <p className="text-text-dim text-[12px] uppercase tracking-wider">Inscritos</p>
+              <p className="text-white text-[26px] font-semibold mt-2">{formatValue(report.youtube.channel.subscribers)}</p>
+            </GlassCard>
+            <GlassCard className="!p-5">
+              <p className="text-text-dim text-[12px] uppercase tracking-wider">Visualizações totais</p>
+              <p className="text-white text-[26px] font-semibold mt-2">{formatValue(report.youtube.channel.views)}</p>
+            </GlassCard>
+            <GlassCard className="!p-5">
+              <p className="text-text-dim text-[12px] uppercase tracking-wider">Vídeos</p>
+              <p className="text-white text-[26px] font-semibold mt-2">{formatValue(report.youtube.channel.videos)}</p>
+            </GlassCard>
+          </div>
+          {(report.youtube.videos?.length ?? 0) > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {report.youtube.videos!.slice(0, 6).map(v => (
+                <a key={v.id} href={v.url} target="_blank" rel="noreferrer"
+                  className="group glass rounded-2xl p-3 hover:bg-white/[0.07] transition-colors">
+                  {v.thumbnail && (
+                    <img src={v.thumbnail} alt={v.title} className="aspect-video w-full rounded-xl object-cover mb-3" />
+                  )}
+                  <p className="text-white text-[13px] font-medium line-clamp-2 mb-1">{v.title}</p>
+                  <div className="flex gap-3 text-text-dim text-[11px]">
+                    <span>{formatValue(v.views)} views</span>
+                    <span>{formatValue(v.likes)} likes</span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          )}
         </section>
       )}
 

@@ -1,6 +1,8 @@
 const express = require('express');
 const cm      = require('../services/chartmetric');
 const sp      = require('../services/spotify');
+const yt      = require('../services/youtube');
+const ig      = require('../services/instagram');
 const ferb    = require('../services/ferb');
 const router  = express.Router();
 
@@ -14,7 +16,7 @@ let tasks = [
 module.exports.tasks = tasks;
 
 async function buildReport() {
-  // Dados Chartmetric — tudo em paralelo
+  // Dados Chartmetric + Spotify + YouTube + Instagram — tudo em paralelo
   const [
     metricChanges,
     audienceMetrics,
@@ -25,6 +27,8 @@ async function buildReport() {
     playlists,
     relatedCM,
     spotifySnapshot,
+    youtubeSnapshot,
+    instagramSnapshot,
   ] = await Promise.all([
     cm.getHomeMetrics(),
     cm.getAudienceMetrics(),
@@ -35,6 +39,8 @@ async function buildReport() {
     cm.getCurrentPlaylists(undefined, 'spotify', 10),
     cm.getRelatedArtists(undefined, 8),
     sp.getSnapshot(),
+    yt.getSnapshot(),
+    ig.getSnapshot(),
   ]);
 
   const todas = [...metricChanges, ...audienceMetrics];
@@ -68,6 +74,9 @@ async function buildReport() {
     spotifyTopTracks: spotifySnapshot?.topTracks || [],
     spotifyArtist:    spotifySnapshot?.artist    || null,
     spotifyConfigured: sp.isConfigured(),
+    youtube: youtubeSnapshot,
+    youtubeConfigured: yt.isConfigured(),
+    instagram: instagramSnapshot,
     pendingTasks: pendentes.map(t => ({
       title: t.title,
       priority: t.priority === 'critica' ? 'high' : t.priority === 'alta' ? 'medium' : 'low',

@@ -43,6 +43,11 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
 }
 
+interface Briefing {
+  summary: string;
+  suggestion: string | null;
+}
+
 export function AgentRoom({
   initialAgent,
   onBack,
@@ -52,9 +57,33 @@ export function AgentRoom({
 }) {
   const [agent,     setAgent]     = useState<Agent>(initialAgent);
   const [demands,   setDemands]   = useState<Demand[]>(initialAgent.demands ?? []);
+  const [briefing,  setBriefing]  = useState<Briefing | null>(null);
+  const [briefingLoading, setBriefingLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [loading,   setLoading]   = useState(false);
   const [response,  setResponse]  = useState<string | null>(null);
+
+  // Buscar briefing ao entrar
+  useEffect(() => {
+    let alive = true;
+    setBriefingLoading(true);
+    fetch(`/api/mvp/briefing/${initialAgent.id}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (alive) { setBriefing(d); setBriefingLoading(false); } })
+      .catch(() => { if (alive) setBriefingLoading(false); });
+    return () => { alive = false; };
+  }, [initialAgent.id]);
+
+  async function refreshBriefing() {
+    setBriefingLoading(true);
+    try {
+      await fetch(`/api/mvp/briefing/${initialAgent.id}/refresh`, { method: 'POST' });
+      const r = await fetch(`/api/mvp/briefing/${initialAgent.id}`);
+      if (r.ok) setBriefing(await r.json());
+    } finally {
+      setBriefingLoading(false);
+    }
+  }
 
   const refresh = useCallback(async () => {
     try {
@@ -124,6 +153,41 @@ export function AgentRoom({
       <div className="room-bio glass-panel">
         <p className="text-white text-[15px] font-medium mb-1">{agent.specialty}</p>
         <p className="text-text-dim text-[14px] leading-relaxed">{agent.bio}</p>
+      </div>
+
+      {/* Briefing — leitura + sugestão proativa */}
+      <div className="briefing-panel" style={{ borderLeftColor: agent.color }}>
+        <div className="briefing-header">
+          <span className="briefing-eyebrow">O que {agent.name} está vendo</span>
+          <button
+            type="button"
+            className="briefing-refresh"
+            onClick={refreshBriefing}
+            disabled={briefingLoading}
+            title="Gerar nova leitura"
+          >
+            ↻
+          </button>
+        </div>
+        {briefingLoading ? (
+          <div className="briefing-skeleton">
+            <div className="briefing-skel-line" />
+            <div className="briefing-skel-line" style={{ width: '85%' }} />
+            <div className="briefing-skel-line" style={{ width: '70%' }} />
+          </div>
+        ) : briefing ? (
+          <>
+            <p className="briefing-summary">{briefing.summary}</p>
+            {briefing.suggestion && (
+              <div className="briefing-suggestion">
+                <span className="briefing-suggestion-label">Sugestão pra essa semana</span>
+                <p>{briefing.suggestion}</p>
+              </div>
+            )}
+          </>
+        ) : (
+          <p className="text-text-dim text-[14px]">Sem leitura disponível agora.</p>
+        )}
       </div>
 
       {/* Resposta do agente (após nova demanda) */}

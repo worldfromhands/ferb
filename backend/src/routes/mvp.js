@@ -2,6 +2,7 @@ const express = require('express');
 const { ask } = require('../services/claudeService');
 const { AGENT_SYSTEM_PROMPTS } = require('../agents/agentPrompts');
 const { buildAgentContext } = require('../agents/agentContext');
+const { generateBriefing, invalidateCache } = require('../agents/agentBriefing');
 
 const router = express.Router();
 
@@ -231,6 +232,25 @@ FORMATO OBRIGATÓRIO: texto corrido, sem asteriscos, sem negrito, sem emojis, se
 router.get('/demands/:agentId', (req, res) => {
   const demands = (demandsStore.get(req.params.agentId) || []).slice().reverse();
   res.json(demands);
+});
+
+// ─────────────────────────────────────────────────────
+// 4b. BRIEFING DO AGENTE (resumo + sugestão proativa)
+// ─────────────────────────────────────────────────────
+
+router.get('/briefing/:agentId', async (req, res, next) => {
+  try {
+    const briefing = await generateBriefing(req.params.agentId);
+    if (!briefing) return res.status(404).json({ error: 'Agente não encontrado' });
+    res.json(briefing);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/briefing/:agentId/refresh', (req, res) => {
+  invalidateCache(req.params.agentId);
+  res.json({ ok: true });
 });
 
 // ─────────────────────────────────────────────────────
