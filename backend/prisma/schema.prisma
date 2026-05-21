@@ -1,0 +1,68 @@
+// FERB — schema do banco
+// SQLite para desenvolvimento (zero infra, persiste no restart).
+// Para migrar pra PostgreSQL: trocar provider="postgresql" e DATABASE_URL no .env.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────
+// AGÊNCIA VIRTUAL
+// ─────────────────────────────────────────────────────
+
+model Agent {
+  id        String   @id
+  name      String
+  title     String
+  specialty String
+  bio       String
+  avatar    String
+  color     String
+  room      String
+  mood      String   @default("idle")
+
+  demands   Demand[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Demand {
+  id          String    @id @default(uuid())
+  agentId     String
+  agent       Agent     @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String
+  priority    String    @default("medium") // low | medium | high
+  status      String    @default("in_progress") // pending | in_progress | completed
+  result      String?
+  dueDate     DateTime?
+
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  @@index([agentId])
+  @@index([status])
+}
+
+// ─────────────────────────────────────────────────────
+// TAREFAS (Home)
+// ─────────────────────────────────────────────────────
+
+model Task {
+  id        String   @id @default(uuid())
+  title     String
+  status    String   @default("todo")    // todo | feita
+  priority  String   @default("media")   // critica | alta | media | baixa
+  ferb      Boolean  @default(false)      // sugerida pelo FERB?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

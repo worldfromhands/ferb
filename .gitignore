@@ -33,8 +33,11 @@ desktop.ini
 *.njsproj
 *.sln
 
-# Prisma
-prisma/migrations/
+# Prisma — migrations SÃO versionadas; o banco SQLite local NÃO
+*.db
+*.db-journal
+dev.db
+backend/prisma/dev.db*
 
 # Temp / extraídos
 FILES_VERB_V1_EXTRACTED/

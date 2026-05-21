@@ -1,31 +1,77 @@
-﻿const express = require('express');
-const router = express.Router();
+const express = require('express');
+const prisma  = require('../config/prisma');
+const router  = express.Router();
 
-let tasks = [
-  { id: '1', title: 'Gravar a voz do Bloco 2',  status: 'todo',  priority: 'critica', source: 'ferb'   },
-  { id: '2', title: 'Responder e-mail da Loud',  status: 'todo',  priority: 'alta',    source: 'ferb'   },
-  { id: '3', title: 'Postar reels da sessao',    status: 'todo',  priority: 'media',   source: 'manual' },
-  { id: '4', title: 'Revisar contrato Spotify',  status: 'todo',  priority: 'media',   source: 'manual' },
-  { id: '5', title: 'Checar ISRC das faixas',    status: 'feita', priority: 'baixa',   source: 'manual' },
-];
-let counter = tasks.length + 1;
-
-router.get('/:artistId', (req, res) => res.json({ tasks }));
-
-router.post('/:artistId', (req, res, next) => {
-  const { title, priority } = req.body;
-  if (!title) { const e = new Error('Titulo obrigatorio'); e.statusCode = 400; return next(e); }
-  const task = { id: String(counter++), title, status: 'todo', priority: priority || 'media', source: 'manual' };
-  tasks.unshift(task);
-  res.status(201).json(task);
+// Lista todas as tarefas
+router.get('/:artistId', async (req, res, next) => {
+  try {
+    const tasks = await prisma.task.findMany({ orderBy: { createdAt: 'desc' } });
+    res.json({ tasks });
+  } catch (err) {
+    next(err);
+  }
 });
 
-// Compatibilidade: /tasks/:id (frontend usa esse path)
-router.patch('/:artistId/tasks/:taskId', (req, res, next) => {
-  const idx = tasks.findIndex(t => t.id === req.params.taskId);
-  if (idx === -1) { const e = new Error('Tarefa nao encontrada'); e.statusCode = 404; return next(e); }
-  tasks[idx] = { ...tasks[idx], ...req.body };
-  res.json(tasks[idx]);
+// Cria tarefa
+router.post('/:artistId', async (req, res, next) => {
+  try {
+    const { title, priority } = req.body;
+    if (!title) {
+      const e = new Error('Titulo obrigatorio');
+      e.statusCode = 400;
+      return next(e);
+    }
+    const task = await prisma.task.create({
+      data: {
+        title,
+        priority: priority || 'media',
+        status: 'todo',
+        ferb: false,
+      },
+    });
+    res.status(201).json(task);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Atualiza tarefa (status, priority, title)
+router.patch('/:artistId/tasks/:taskId', async (req, res, next) => {
+  try {
+    const { title, status, priority } = req.body;
+    const data = {};
+    if (title    !== undefined) data.title    = title;
+    if (status   !== undefined) data.status   = status;
+    if (priority !== undefined) data.priority = priority;
+
+    const task = await prisma.task.update({
+      where: { id: req.params.taskId },
+      data,
+    });
+    res.json(task);
+  } catch (err) {
+    if (err.code === 'P2025') {
+      const e = new Error('Tarefa nao encontrada');
+      e.statusCode = 404;
+      return next(e);
+    }
+    next(err);
+  }
+});
+
+// Remove tarefa
+router.delete('/:artistId/tasks/:taskId', async (req, res, next) => {
+  try {
+    await prisma.task.delete({ where: { id: req.params.taskId } });
+    res.json({ ok: true });
+  } catch (err) {
+    if (err.code === 'P2025') {
+      const e = new Error('Tarefa nao encontrada');
+      e.statusCode = 404;
+      return next(e);
+    }
+    next(err);
+  }
 });
 
 module.exports = router;

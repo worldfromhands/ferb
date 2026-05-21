@@ -1,19 +1,11 @@
 const express = require('express');
+const prisma  = require('../config/prisma');
 const cm      = require('../services/chartmetric');
 const sp      = require('../services/spotify');
 const yt      = require('../services/youtube');
 const ig      = require('../services/instagram');
 const ferb    = require('../services/ferb');
 const router  = express.Router();
-
-let tasks = [
-  { id: '1', title: 'Gravar a voz do Bloco 2',  status: 'todo', priority: 'critica', ferb: true  },
-  { id: '2', title: 'Responder e-mail da Loud',  status: 'todo', priority: 'alta',   ferb: true  },
-  { id: '3', title: 'Postar reels da sessao',    status: 'todo', priority: 'media',  ferb: false },
-  { id: '4', title: 'Revisar contrato Spotify',  status: 'todo', priority: 'media',  ferb: false },
-  { id: '5', title: 'Checar ISRC das faixas',    status: 'feita', priority: 'baixa', ferb: false },
-];
-module.exports.tasks = tasks;
 
 async function buildReport() {
   // Dados Chartmetric + Spotify + YouTube + Instagram — tudo em paralelo
@@ -57,7 +49,11 @@ async function buildReport() {
       status: m.delta != null && m.delta < -50000 ? 'critical' : 'warning',
     }));
 
-  const pendentes = tasks.filter(t => t.status !== 'feita').slice(0, 3);
+  const pendentes = await prisma.task.findMany({
+    where: { status: { not: 'feita' } },
+    orderBy: { createdAt: 'asc' },
+    take: 3,
+  });
 
   return {
     summary,
@@ -100,4 +96,3 @@ router.post('/:artistId/refresh', async (req, res, next) => {
 });
 
 module.exports = router;
-module.exports.tasks = tasks;
