@@ -25,8 +25,9 @@
 - Erro de TypeError (ex.: `r.data.followers.total` em objeto sem `followers`) cai no `.catch` do axios mas sem `e.response` — daí `STATUS: undefined`.
 
 ## Tarefas Pendentes
+- [x] Commit das mudanças Prisma + Spotify — feito (`31f087c`, 13 arquivos, +993/-259)
+- [x] Push pro GitHub — feito (`6a8a6d1..31f087c` em origin/master)
 - [ ] YOUTUBE_API_KEY — usuário precisa pegar no Google Cloud Console e colar no `.env` (`youtubeConfigured: false`)
-- [ ] Commit das mudanças Prisma + Spotify no GitHub (schema, seed, migrations, config/prisma.js, mvp.js, home.js, execution.js, package.json, .gitignore, services/spotify.js)
 - [ ] Reiniciar/verificar o frontend (Vite) após as mudanças
 - [ ] Chartmetric `relatedArtists` retornando 0 — investigar (Home mostra related vazio)
 - [ ] FIRECRAWL_API_KEY — para feed de fotos do Instagram
@@ -66,3 +67,4 @@ Continuação da migração Prisma (já concluída em sessão anterior). Tarefa 
    - `/search` e `/albums/{id}/tracks` OK.
 4. `spotify.js` reescrito: wrapper `safe()`, `searchTopTracks` substitui top-tracks, `getAlbumTracks` adicionado, todos os `limit` para 10, `relatedArtists: []` (fallback Chartmetric).
 5. Testado: snapshot e home endpoint funcionando.
+6. Commit `31f087c` (Prisma/SQLite + Spotify resiliente) + push pro GitHub. `.env` mantido fora do commit (gitignored).
