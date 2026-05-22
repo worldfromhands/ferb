@@ -1,26 +1,152 @@
-﻿const express = require('express');
-const router = express.Router();
-const data = {
-  contacts: [
-    { name: 'Fellipe Moreira', type: 'producer', company: 'FMM Studios',  status: 'active',   notes: 'Produziu Bloco 1 e 2.' },
-    { name: 'Carol (Loud)',    type: 'label',    company: 'Loud Records',  status: 'prospect', notes: 'Aguardando resposta deal EP.' },
-    { name: 'Rafael Booking', type: 'booker',   company: 'Move Agencia',  status: 'active',   notes: '3 shows confirmados.' },
-    { name: 'Pedro Sync',     type: 'brand',    company: 'Itau Unibanco', status: 'cold',     notes: 'Sync campanha verao.' },
-    { name: 'Jao',            type: 'artist',   company: null,            status: 'active',   notes: 'Collab em negociacao.' },
-    { name: 'Marina (Deezer)',type: 'label',    company: 'Deezer BR',     status: 'active',   notes: 'Parceria playlist.' },
-  ],
-  opportunities: [
-    { title: 'Deal EP com Loud',          description: 'R$40k adiantamento. Prazo: sexta.', value: 40000, deadline: '2026-05-23' },
-    { title: 'Sync Itau Q3',              description: 'Track exclusiva campanha verao.',   value: 15000, deadline: '2026-06-01' },
-    { title: 'Playlist editorial Deezer', description: 'Garantida se lancar ate 30/05.',   value: null,  deadline: '2026-05-30' },
-  ],
-};
-router.get('/:artistId', (req, res) => res.json(data));
-router.post('/:artistId/contact', (req, res) => {
-  const { name, type, company, notes } = req.body;
-  if (!name) { const e = new Error('Nome obrigatorio'); e.statusCode = 400; throw e; }
-  const c = { name, type: type || 'other', company: company || null, status: 'prospect', notes: notes || '' };
-  data.contacts.push(c);
-  res.status(201).json(c);
+const express = require('express');
+const prisma  = require('../config/prisma');
+const router  = express.Router();
+
+// ─────────────────────────────────────────────────────
+// LISTAR — contatos + oportunidades
+// ─────────────────────────────────────────────────────
+router.get('/:artistId', async (req, res, next) => {
+  try {
+    const [contacts, opportunities] = await Promise.all([
+      prisma.contact.findMany({ orderBy: { createdAt: 'desc' } }),
+      prisma.opportunity.findMany({
+        orderBy: { createdAt: 'desc' },
+        include: { contact: { select: { id: true, name: true } } },
+      }),
+    ]);
+    res.json({ contacts, opportunities });
+  } catch (err) {
+    next(err);
+  }
 });
+
+// ─────────────────────────────────────────────────────
+// CONTATOS
+// ─────────────────────────────────────────────────────
+router.post('/:artistId/contact', async (req, res, next) => {
+  try {
+    const { name, role, company, type, email, phone, city, notes } = req.body;
+    if (!name || !String(name).trim()) {
+      const e = new Error('Nome obrigatorio');
+      e.statusCode = 400;
+      return next(e);
+    }
+    const contact = await prisma.contact.create({
+      data: {
+        name: String(name).trim(),
+        role:    role    || null,
+        company: company || null,
+        type:    type    || 'outro',
+        email:   email   || null,
+        phone:   phone   || null,
+        city:    city    || null,
+        notes:   notes   || null,
+      },
+    });
+    res.status(201).json(contact);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.patch('/:artistId/contact/:id', async (req, res, next) => {
+  try {
+    const fields = ['name', 'role', 'company', 'type', 'email', 'phone', 'city', 'notes'];
+    const data = {};
+    for (const f of fields) if (req.body[f] !== undefined) data[f] = req.body[f];
+    if (req.body.lastContact !== undefined) {
+      data.lastContact = req.body.lastContact ? new Date(req.body.lastContact) : null;
+    }
+    const contact = await prisma.contact.update({ where: { id: req.params.id }, data });
+    res.json(contact);
+  } catch (err) {
+    if (err.code === 'P2025') {
+      const e = new Error('Contato nao encontrado');
+      e.statusCode = 404;
+      return next(e);
+    }
+    next(err);
+  }
+});
+
+router.delete('/:artistId/contact/:id', async (req, res, next) => {
+  try {
+    await prisma.contact.delete({ where: { id: req.params.id } });
+    res.json({ ok: true });
+  } catch (err) {
+    if (err.code === 'P2025') {
+      const e = new Error('Contato nao encontrado');
+      e.statusCode = 404;
+      return next(e);
+    }
+    next(err);
+  }
+});
+
+// ─────────────────────────────────────────────────────
+// OPORTUNIDADES
+// ─────────────────────────────────────────────────────
+router.post('/:artistId/opportunity', async (req, res, next) => {
+  try {
+    const { title, description, status, priority, value, dueDate, contactId } = req.body;
+    if (!title || !String(title).trim()) {
+      const e = new Error('Titulo obrigatorio');
+      e.statusCode = 400;
+      return next(e);
+    }
+    const opportunity = await prisma.opportunity.create({
+      data: {
+        title: String(title).trim(),
+        description: description || null,
+        status:      status      || 'aberta',
+        priority:    priority    || 'media',
+        value:       value != null && value !== '' ? Number(value) : null,
+        dueDate:     dueDate && String(dueDate).trim() ? new Date(dueDate) : null,
+        contactId:   contactId || null,
+      },
+    });
+    res.status(201).json(opportunity);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.patch('/:artistId/opportunity/:id', async (req, res, next) => {
+  try {
+    const data = {};
+    for (const f of ['title', 'description', 'status', 'priority', 'contactId']) {
+      if (req.body[f] !== undefined) data[f] = req.body[f];
+    }
+    if (req.body.value !== undefined) {
+      data.value = req.body.value != null && req.body.value !== '' ? Number(req.body.value) : null;
+    }
+    if (req.body.dueDate !== undefined) {
+      data.dueDate = req.body.dueDate && String(req.body.dueDate).trim() ? new Date(req.body.dueDate) : null;
+    }
+    const opportunity = await prisma.opportunity.update({ where: { id: req.params.id }, data });
+    res.json(opportunity);
+  } catch (err) {
+    if (err.code === 'P2025') {
+      const e = new Error('Oportunidade nao encontrada');
+      e.statusCode = 404;
+      return next(e);
+    }
+    next(err);
+  }
+});
+
+router.delete('/:artistId/opportunity/:id', async (req, res, next) => {
+  try {
+    await prisma.opportunity.delete({ where: { id: req.params.id } });
+    res.json({ ok: true });
+  } catch (err) {
+    if (err.code === 'P2025') {
+      const e = new Error('Oportunidade nao encontrada');
+      e.statusCode = 404;
+      return next(e);
+    }
+    next(err);
+  }
+});
+
 module.exports = router;

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TarefasRouteImport } from './routes/tarefas'
 import { Route as RelatoriosRouteImport } from './routes/relatorios'
+import { Route as RelacoesRouteImport } from './routes/relacoes'
 import { Route as DadosRouteImport } from './routes/dados'
 import { Route as CriticoRouteImport } from './routes/critico'
 import { Route as CatalogoRouteImport } from './routes/catalogo'
@@ -25,6 +26,11 @@ const TarefasRoute = TarefasRouteImport.update({
 const RelatoriosRoute = RelatoriosRouteImport.update({
   id: '/relatorios',
   path: '/relatorios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RelacoesRoute = RelacoesRouteImport.update({
+  id: '/relacoes',
+  path: '/relacoes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DadosRoute = DadosRouteImport.update({
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/catalogo': typeof CatalogoRoute
   '/critico': typeof CriticoRoute
   '/dados': typeof DadosRoute
+  '/relacoes': typeof RelacoesRoute
   '/relatorios': typeof RelatoriosRoute
   '/tarefas': typeof TarefasRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/catalogo': typeof CatalogoRoute
   '/critico': typeof CriticoRoute
   '/dados': typeof DadosRoute
+  '/relacoes': typeof RelacoesRoute
   '/relatorios': typeof RelatoriosRoute
   '/tarefas': typeof TarefasRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/catalogo': typeof CatalogoRoute
   '/critico': typeof CriticoRoute
   '/dados': typeof DadosRoute
+  '/relacoes': typeof RelacoesRoute
   '/relatorios': typeof RelatoriosRoute
   '/tarefas': typeof TarefasRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/catalogo'
     | '/critico'
     | '/dados'
+    | '/relacoes'
     | '/relatorios'
     | '/tarefas'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/catalogo'
     | '/critico'
     | '/dados'
+    | '/relacoes'
     | '/relatorios'
     | '/tarefas'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/catalogo'
     | '/critico'
     | '/dados'
+    | '/relacoes'
     | '/relatorios'
     | '/tarefas'
   fileRoutesById: FileRoutesById
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   CatalogoRoute: typeof CatalogoRoute
   CriticoRoute: typeof CriticoRoute
   DadosRoute: typeof DadosRoute
+  RelacoesRoute: typeof RelacoesRoute
   RelatoriosRoute: typeof RelatoriosRoute
   TarefasRoute: typeof TarefasRoute
 }
@@ -135,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/relatorios'
       fullPath: '/relatorios'
       preLoaderRoute: typeof RelatoriosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/relacoes': {
+      id: '/relacoes'
+      path: '/relacoes'
+      fullPath: '/relacoes'
+      preLoaderRoute: typeof RelacoesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dados': {
@@ -181,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   CatalogoRoute: CatalogoRoute,
   CriticoRoute: CriticoRoute,
   DadosRoute: DadosRoute,
+  RelacoesRoute: RelacoesRoute,
   RelatoriosRoute: RelatoriosRoute,
   TarefasRoute: TarefasRoute,
 }

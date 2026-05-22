@@ -107,6 +107,20 @@ const TASKS = [
   { title: 'Checar ISRC das faixas',   status: 'feita', priority: 'baixa',  ferb: false },
 ];
 
+const CONTACTS = [
+  { name: 'Fellipe Moreira', role: 'Produtor',     company: 'FMM Studios',   type: 'produtor', city: 'São Paulo', notes: 'Produziu Bloco 1 e 2.' },
+  { name: 'Carol',           role: 'A&R',          company: 'Loud Records',  type: 'selo',     city: 'São Paulo', notes: 'Aguardando resposta do deal de EP.' },
+  { name: 'Rafael',          role: 'Booking',      company: 'Move Agência',  type: 'promoter', city: 'Rio de Janeiro', notes: '3 shows confirmados.' },
+  { name: 'Pedro',           role: 'Sync',         company: 'Itaú Unibanco', type: 'marca',    city: 'São Paulo', notes: 'Sync para campanha de verão.' },
+  { name: 'Marina',          role: 'Editorial',    company: 'Deezer BR',     type: 'selo',     city: 'São Paulo', notes: 'Parceria de playlist.' },
+];
+
+const OPPORTUNITIES = [
+  { title: 'Deal EP com Loud',          description: 'R$40k de adiantamento. Prazo: sexta.', status: 'em_negociacao', priority: 'critica', value: 40000, contactName: 'Carol'  },
+  { title: 'Sync Itaú Q3',              description: 'Faixa exclusiva para campanha de verão.', status: 'aberta',     priority: 'alta',    value: 15000, contactName: 'Pedro'  },
+  { title: 'Playlist editorial Deezer', description: 'Garantida se lançar até 30/05.',          status: 'aberta',     priority: 'media',   value: null,  contactName: 'Marina' },
+];
+
 async function main() {
   console.log('Seed: agentes...');
   for (const a of AGENTS) {
@@ -129,6 +143,26 @@ async function main() {
     console.log(`  ${TASKS.length} tarefas criadas.`);
   } else {
     console.log(`  ${taskCount} tarefas já existem — pulando.`);
+  }
+
+  // Contatos + oportunidades só na primeira vez
+  const contactCount = await prisma.contact.count();
+  if (contactCount === 0) {
+    console.log('Seed: contatos e oportunidades...');
+    const byName = {};
+    for (const c of CONTACTS) {
+      const created = await prisma.contact.create({ data: c });
+      byName[c.name] = created.id;
+    }
+    for (const o of OPPORTUNITIES) {
+      const { contactName, ...rest } = o;
+      await prisma.opportunity.create({
+        data: { ...rest, contactId: byName[contactName] || null },
+      });
+    }
+    console.log(`  ${CONTACTS.length} contatos e ${OPPORTUNITIES.length} oportunidades criados.`);
+  } else {
+    console.log(`  ${contactCount} contatos já existem — pulando.`);
   }
 }
 

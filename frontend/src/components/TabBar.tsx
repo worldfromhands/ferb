@@ -4,9 +4,10 @@ import { MotionLogo } from "./MotionLogo";
 const tabs = [
   { label: "Home",       to: "/",           ready: true  },
   { label: "Agência",    to: "/agencia",    ready: true  },
+  { label: "Dados",      to: "/dados",      ready: true  },
+  { label: "Tarefas",    to: "/tarefas",    ready: true  },
+  { label: "Relações",   to: "/relacoes",   ready: true  },
   { label: "Crítico",    to: "/critico",    ready: false },
-  { label: "Dados",      to: "/dados",      ready: false },
-  { label: "Tarefas",    to: "/tarefas",    ready: false },
   { label: "Catálogo",   to: "/catalogo",   ready: false },
   { label: "Relatórios", to: "/relatorios", ready: false },
 ];
