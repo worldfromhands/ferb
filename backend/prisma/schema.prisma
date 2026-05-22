@@ -129,3 +129,30 @@ model TikTokAuth {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
+
+// ─────────────────────────────────────────────────────
+// HISTÓRICO — snapshots de métricas + relatório diário
+// ─────────────────────────────────────────────────────
+
+model MetricSnapshot {
+  id         String   @id @default(uuid())
+  source     String   // chartmetric | youtube | deezer | lastfm | spotify
+  metric     String   // ex.: monthly_listeners, subscribers, fans, listeners
+  label      String   // rótulo legível — ex.: "Inscritos YouTube"
+  value      Float
+  capturedAt DateTime @default(now())
+
+  @@index([metric])
+  @@index([capturedAt])
+}
+
+model DailyReport {
+  id        String   @id @default(uuid())
+  date      DateTime @unique          // dia do relatório (meia-noite)
+  summary   String                    // texto gerado pelo FERB
+  status    String   @default("ok")   // ok | warning | critical
+  metrics   String?                   // JSON com o resumo de métricas do dia
+  createdAt DateTime @default(now())
+
+  @@index([date])
+}

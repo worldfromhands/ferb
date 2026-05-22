@@ -3,8 +3,10 @@ require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 const express          = require('express');
 const cors             = require('cors');
+const cron             = require('node-cron');
 const errorHandler     = require('./middleware/errorHandler');
 const placeholderRoutes = require('./routes/placeholder');
+const { runDailyReport } = require('./jobs/dailyReport');
 
 const homeRoutes       = require('./routes/home');
 const audienceRoutes   = require('./routes/audience');
@@ -13,6 +15,7 @@ const executionRoutes  = require('./routes/execution');
 const instagramRoutes  = require('./routes/instagram');
 const tiktokRoutes     = require('./routes/tiktok');
 const platformsRoutes  = require('./routes/platforms');
+const reportsRoutes    = require('./routes/reports');
 const mvpRoutes        = require('./routes/mvp');
 
 const app  = express();
@@ -33,6 +36,7 @@ app.use('/api/relations', relationsRoutes);
 app.use('/api/execution', executionRoutes);
 app.use('/api/tiktok',    tiktokRoutes);
 app.use('/api/platforms', platformsRoutes);
+app.use('/api/reports',   reportsRoutes);
 
 app.use('/api/mvp',       mvpRoutes);
 
@@ -46,7 +50,14 @@ app.use('/api/bureaucracy',   placeholderRoutes('BUROCRACIA'));
 
 app.use(errorHandler);
 
+// ─── Cron — relatório diário do FERB às 6:30 ───────────
+cron.schedule('30 6 * * *', () => {
+  console.log('[cron] disparando relatório diário das 6:30...');
+  runDailyReport().catch(e => console.error('[cron] dailyReport falhou:', e.message));
+}, { timezone: 'America/Sao_Paulo' });
+
 app.listen(PORT, () => {
   console.log(`\n  FERB backend v2 rodando em http://localhost:${PORT}`);
-  console.log(`  Health: http://localhost:${PORT}/health\n`);
+  console.log(`  Health: http://localhost:${PORT}/health`);
+  console.log(`  Cron: relatório diário agendado para 6:30 (America/Sao_Paulo)\n`);
 });
