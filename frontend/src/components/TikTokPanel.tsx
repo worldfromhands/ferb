@@ -9,6 +9,7 @@ interface TikTokStatus {
   connected: boolean;
   displayName: string | null;
   avatarUrl: string | null;
+  redirectUri?: string;
 }
 interface TikTokVideo {
   id: string; title: string;
@@ -113,20 +114,34 @@ export function TikTokPanel() {
         </GlassCard>
       ) : !connected ? (
         // ─── NÃO CONECTADO ───
-        <GlassCard className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <div className="flex-1">
-            <p className="text-white text-[15px] font-medium">Conecte a conta do TikTok do KYAN</p>
-            <p className="text-text-dim text-[14px] mt-1">
-              O TikTok exige login do artista para liberar seguidores, curtidas e métricas de vídeo.
-            </p>
-          </div>
-          <a
-            href="/api/tiktok/auth"
-            className="inline-flex items-center justify-center gap-2 bg-primary text-white rounded-xl px-5 py-2.5 text-[14px] font-medium hover:opacity-90 transition-opacity shrink-0"
-          >
-            <Music2 size={16} /> Conectar TikTok
-          </a>
-        </GlassCard>
+        (status?.redirectUri || "").includes("localhost") ? (
+          // localhost: TikTok exige HTTPS público — conexão fica pro deploy
+          <GlassCard className="flex items-start gap-3">
+            <AlertCircle size={20} className="text-amber-400 shrink-0 mt-0.5" />
+            <div>
+              <p className="text-white text-[15px] font-medium">Conexão do TikTok disponível após o deploy</p>
+              <p className="text-text-dim text-[14px] mt-1">
+                O TikTok só aceita um endereço HTTPS público para o login. A integração já está pronta —
+                assim que o FERB for publicado, o botão "Conectar TikTok" funciona.
+              </p>
+            </div>
+          </GlassCard>
+        ) : (
+          <GlassCard className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="flex-1">
+              <p className="text-white text-[15px] font-medium">Conecte a conta do TikTok do KYAN</p>
+              <p className="text-text-dim text-[14px] mt-1">
+                O TikTok exige login do artista para liberar seguidores, curtidas e métricas de vídeo.
+              </p>
+            </div>
+            <a
+              href="/api/tiktok/auth"
+              className="inline-flex items-center justify-center gap-2 bg-primary text-white rounded-xl px-5 py-2.5 text-[14px] font-medium hover:opacity-90 transition-opacity shrink-0"
+            >
+              <Music2 size={16} /> Conectar TikTok
+            </a>
+          </GlassCard>
+        )
       ) : (
         // ─── CONECTADO ───
         <>
