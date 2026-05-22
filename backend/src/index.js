@@ -16,6 +16,8 @@ const instagramRoutes  = require('./routes/instagram');
 const tiktokRoutes     = require('./routes/tiktok');
 const platformsRoutes  = require('./routes/platforms');
 const reportsRoutes    = require('./routes/reports');
+const dnaRoutes        = require('./routes/dna');
+const statesRoutes     = require('./routes/states');
 const mvpRoutes        = require('./routes/mvp');
 
 const app  = express();
@@ -37,6 +39,8 @@ app.use('/api/execution', executionRoutes);
 app.use('/api/tiktok',    tiktokRoutes);
 app.use('/api/platforms', platformsRoutes);
 app.use('/api/reports',   reportsRoutes);
+app.use('/api/dna',       dnaRoutes);
+app.use('/api/states',    statesRoutes);
 
 app.use('/api/mvp',       mvpRoutes);
 
