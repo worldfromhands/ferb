@@ -1,0 +1,133 @@
+{
+  "meta": {
+    "artist": "KYAN",
+    "source": "Spotify for Artists",
+    "capturedAt": "2026-05-22",
+    "period": "Últimos 12 meses",
+    "note": "Snapshot manual extraído de gravação de tela do Spotify for Artists. NÃO atualiza automaticamente — é uma foto da data acima."
+  },
+  "topSongs": [
+    { "rank": 1,  "title": "brinks!",                       "streams": 34881859 },
+    { "rank": 2,  "title": "TANG",                           "streams": 33262185 },
+    { "rank": 3,  "title": "USD, é USD!",                    "streams": 31900306 },
+    { "rank": 4,  "title": "Primeiro Lugar do Pódio",        "streams": 31764143 },
+    { "rank": 5,  "title": "Menor Magrinho",                 "streams": 31346877 },
+    { "rank": 6,  "title": "Frutos",                         "streams": 30383431 },
+    { "rank": 7,  "title": "DESCE LICOR",                    "streams": 27624459 },
+    { "rank": 8,  "title": "tipo, sonho de consumo!",        "streams": 26542853 },
+    { "rank": 9,  "title": "Preto e Dinheiro",               "streams": 26500744 },
+    { "rank": 10, "title": "Fantástico Mundo da Oakley",     "streams": 22271802 },
+    { "rank": 11, "title": "FORTAL",                         "streams": 1584031 },
+    { "rank": 12, "title": "Sinfonia",                       "streams": 1580242 },
+    { "rank": 13, "title": "FECHAMENTO",                     "streams": 1526037 },
+    { "rank": 14, "title": "Cana-lhas",                      "streams": 1453070 },
+    { "rank": 15, "title": "Dia de Baile",                   "streams": 1418499 },
+    { "rank": 16, "title": "Bandido Fi Di Crente",           "streams": 1404483 },
+    { "rank": 17, "title": "Podcast",                        "streams": 1147843 },
+    { "rank": 18, "title": "Bota a Mão no Chão",             "streams": 1054094 },
+    { "rank": 19, "title": "POKÉMON.",                       "streams": 1041479 },
+    { "rank": 20, "title": "USD, É USD. - Remix",            "streams": 1027364 },
+    { "rank": 21, "title": "Desaforo",                       "streams": 933370 }
+  ],
+  "albums": [
+    { "title": "DOIS Quebrada Inteligente Pro Max", "type": "Album", "streams": 89097607, "releaseDate": "2025-12-11" },
+    { "title": "Dias Antes de Mandrake",            "type": "Album", "streams": 84960113 },
+    { "title": "Só Vilão, Aqui Não Tem Herói",      "type": "Album", "streams": 82049878 },
+    { "title": "DOIS Quebrada Inteligente",         "type": "Album", "streams": 80539960 },
+    { "title": "Yin Yang",                          "type": "EP",    "streams": 44582455 }
+  ],
+  "topSingles": [
+    { "title": "The Box Medley 2",                  "streams": 43375351 },
+    { "title": "O 7 Patrocina",                     "streams": 37609592 },
+    { "title": "BRAZIL",                            "streams": 36944474 },
+    { "title": "Baby Cê é Gata",                    "streams": 36549029 },
+    { "title": "brinks!",                           "streams": 34881859 },
+    { "title": "TANG",                              "streams": 33262185 },
+    { "title": "USD, é USD!",                       "streams": 31900306 },
+    { "title": "Primeiro Lugar do Pódio",           "streams": 31764143 },
+    { "title": "Menor Magrinho",                    "streams": 31346877 },
+    { "title": "Frutos",                            "streams": 30383431 },
+    { "title": "Preto e Dinheiro",                  "streams": 26500744 },
+    { "title": "Resumo",                            "streams": 21750068 },
+    { "title": "Nós é Ruim e o Cabelo Ajuda",       "streams": 21402921 },
+    { "title": "Mini Game",                         "streams": 20916821 }
+  ],
+  "albumAnalysis": [
+    {
+      "title": "DOIS Quebrada Inteligente Pro Max",
+      "releaseDate": "2025-12-11",
+      "streams12m": 72342224,
+      "listeners12m": 5942340,
+      "streamsPerListener": 12.2,
+      "growthStreams": "+332%",
+      "growthListeners": "+147%",
+      "peakDay": { "date": "2026-02-13", "streams": 132057 },
+      "sources": {
+        "allActive": 50,
+        "artistProfileAndCatalog": 29,
+        "ownPlaylistsAndLibrary": 28,
+        "listenerQueue": 10
+      },
+      "reading": "Álbum mais novo e mais forte. +332% confirma o maior lançamento recente da carreira."
+    },
+    {
+      "title": "UM Quebrada Inteligente",
+      "streams12m": 24002431,
+      "listeners12m": 2291408,
+      "streamsPerListener": 10.5,
+      "growthStreams": "-36%",
+      "growthListeners": "-19%",
+      "peakDay": { "date": "2026-02-15", "streams": 34718 },
+      "reading": "Álbum mais antigo em queda natural (-36%). Ainda gera 24M/ano — relevante no catálogo."
+    },
+    {
+      "title": "Dias Antes de Mandrake",
+      "streams12m": 12983570,
+      "listeners12m": 1661988,
+      "streamsPerListener": 7.8,
+      "growthStreams": "-36%",
+      "growthListeners": "-24%",
+      "peakDay": { "date": "2025-12-29", "streams": 25462 },
+      "sources": {
+        "allActive": 47,
+        "artistProfileAndCatalog": 23,
+        "ownPlaylistsAndLibrary": 30,
+        "listenerQueue": 7,
+        "allProgrammed": 45,
+        "editorialPlaylists": 1
+      },
+      "reading": "Queda consistente de 36%. Peso alto de playlists próprias do ouvinte (30%) = fã base leal que salva e dá replay."
+    }
+  ],
+  "geography": {
+    "basedOn": "Mandona (Se eu te dissesse) — streams últimos 28 dias",
+    "topCountries": [
+      { "rank": 1, "country": "Brasil",         "streams": 1642131 },
+      { "rank": 2, "country": "Portugal",       "streams": 49429 },
+      { "rank": 3, "country": "Estados Unidos", "streams": 19368 },
+      { "rank": 4, "country": "Angola",         "streams": 3901 },
+      { "rank": 5, "country": "Reino Unido",    "streams": 3900 }
+    ],
+    "topCities": [
+      { "rank": 1, "city": "São Paulo",      "country": "Brasil", "streams": 357715 },
+      { "rank": 2, "city": "Rio de Janeiro", "country": "Brasil", "streams": 100719 },
+      { "rank": 3, "city": "Belo Horizonte", "country": "Brasil", "streams": 68849 },
+      { "rank": 4, "city": "Brasília",       "country": "Brasil", "streams": 53374 },
+      { "rank": 5, "city": "Campinas",       "country": "Brasil", "streams": 50443 }
+    ]
+  },
+  "playlists": {
+    "byReach": [
+      { "name": "todas do Kyan", "songs": 10, "reach": 168978 },
+      { "name": "Trap Classe", "songs": 2, "reach": 164236 },
+      { "name": "Daylist", "songs": 10, "reach": 146428, "editorial": true },
+      { "name": "Copão na Mão", "songs": 10, "reach": 142841 },
+      { "name": "ELETROFUNK GOIANO ATUALIZADO", "songs": 2, "reach": 135042 },
+      { "name": "kyan & mu540", "songs": 10, "reach": 128601 },
+      { "name": "Escolha dos Editores: Melhores", "songs": 1, "reach": 112822, "editorial": true },
+      { "name": "mc ig, só as pura — Distante dos Comédias", "reach": 109861 },
+      { "name": "como fui te amar demais", "songs": 3, "reach": 101104 },
+      { "name": "KYAN AS MELHORES", "songs": 10, "reach": 92701 }
+    ]
+  }
+}

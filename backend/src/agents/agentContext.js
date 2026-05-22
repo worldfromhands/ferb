@@ -9,11 +9,32 @@
 
 const cm = require('../services/chartmetric');
 const sp = require('../services/spotify');
+const { getCatalog } = require('../services/catalog');
 
 function fmt(n) {
   if (n == null) return '?';
   return Number(n).toLocaleString('pt-BR');
 }
+
+// ── CATÁLOGO (snapshot Spotify for Artists) — fonte local, nunca falha ──
+const catTopSongs = (n = 10) =>
+  (getCatalog().topSongs || []).slice(0, n).map(s => `${s.rank}. ${s.title} — ${fmt(s.streams)} streams`).join('\n');
+const catDiscography = () =>
+  (getCatalog().albums || []).map(a => `- ${a.title} (${a.type}) — ${fmt(a.streams)} streams`).join('\n');
+const catAlbumAnalysis = () =>
+  (getCatalog().albumAnalysis || []).map(a =>
+    `- ${a.title}: ${fmt(a.streams12m)} streams/12m, ${fmt(a.listeners12m)} ouvintes, crescimento ${a.growthStreams}`
+  ).join('\n');
+const catGeography = () => {
+  const g = getCatalog().geography || {};
+  const paises  = (g.topCountries || []).map(p => `${p.country} ${fmt(p.streams)}`).join(' · ');
+  const cidades = (g.topCities || []).map(c => `${c.city} ${fmt(c.streams)}`).join(' · ');
+  return `Países (28d): ${paises}\nCidades (28d): ${cidades}`;
+};
+const catPlaylists = () =>
+  (getCatalog().playlists?.byReach || []).slice(0, 8)
+    .map(p => `- ${p.name}${p.editorial ? ' [editorial]' : ''} — reach ${fmt(p.reach)}`).join('\n');
+const CAT_NOTE = 'Fonte: Spotify for Artists, snapshot manual de 22/05/2026 (não atualiza sozinho).';
 
 // Isola cada chamada — se falhar, devolve o fallback em vez de derrubar tudo.
 async function safe(fn, fallback) {
@@ -57,7 +78,16 @@ async function buildAgentContext(agentId) {
 NÚMEROS ATUAIS:
 ${numeros}
 
-ARTISTAS SIMILARES (concorrência direta): ${related.length ? related.slice(0,5).map(r => r.name).join(', ') : INDISP}`;
+ARTISTAS SIMILARES (concorrência direta): ${related.length ? related.slice(0,5).map(r => r.name).join(', ') : INDISP}
+
+CATÁLOGO — DESEMPENHO REAL (Spotify for Artists):
+Top músicas por streams:
+${catTopSongs(6)}
+Discografia (streams totais):
+${catDiscography()}
+Análise dos álbuns (12 meses):
+${catAlbumAnalysis()}
+${CAT_NOTE}`;
       }
 
       // ─── PRODUTOR — catálogo, lançamentos, tracks ──
@@ -81,7 +111,11 @@ ${tracks || INDISP}
 FAIXAS DO ÁLBUM MAIS RECENTE:
 ${latest || INDISP}
 
-ARTISTAS SIMILARES (referência sonora): ${related.length ? related.slice(0,6).map(r => r.name).join(', ') : INDISP}`;
+ARTISTAS SIMILARES (referência sonora): ${related.length ? related.slice(0,6).map(r => r.name).join(', ') : INDISP}
+
+TOP MÚSICAS POR STREAMS (Spotify for Artists — o que de fato performa):
+${catTopSongs(10)}
+${CAT_NOTE}`;
       }
 
       // ─── MARKETER — redes sociais, demografia, geografia, identidade ──
@@ -104,7 +138,14 @@ ARTISTAS SIMILARES (referência sonora): ${related.length ? related.slice(0,6).m
 - Atividades: ${identity?.activities?.join(', ') || '?'}
 
 CIDADES DE AUDIÊNCIA (onde já há base de ouvintes):
-${cidades}`;
+${cidades}
+
+GEOGRAFIA POR STREAMS (Spotify for Artists):
+${catGeography()}
+
+PLAYLISTS POR ALCANCE (onde o KYAN aparece):
+${catPlaylists()}
+${CAT_NOTE}`;
       }
 
       // ─── A&R — catálogo, faixas, playlists, gêneros, artistas próximos ──
@@ -138,7 +179,19 @@ ${plList || INDISP}
 
 ARTISTAS SIMILARES (referências de mercado): ${related.length ? related.slice(0,6).map(r => r.name).join(', ') : INDISP}
 
-NOTA: o Spotify não expõe streams/popularidade por faixa neste plano. Use os nomes reais de faixa/álbum acima — nunca invente títulos. Para escolher uma faixa, raciocine pela posição no catálogo, recência e encaixe de playlist.`;
+TOP MÚSICAS POR STREAMS REAIS (Spotify for Artists):
+${catTopSongs(10)}
+
+DISCOGRAFIA POR STREAMS:
+${catDiscography()}
+
+ANÁLISE DOS ÁLBUNS (12 meses — crescimento/queda):
+${catAlbumAnalysis()}
+
+PLAYLISTS POR ALCANCE:
+${catPlaylists()}
+
+${CAT_NOTE} Use estes streams reais para escolher faixas — nunca invente títulos nem números fora desta lista.`;
       }
 
       // ─── ADVOGADO — record label, status, discografia ──
@@ -157,7 +210,10 @@ NOTA: o Spotify não expõe streams/popularidade por faixa neste plano. Use os n
 DISCOGRAFIA REAL (lançamentos que geram royalties/publishing):
 ${albuns || INDISP}
 
-NOTA: Você NÃO tem dados de streams por faixa nem de splits/contratos individuais. Fale sobre os riscos de forma estrutural — nunca cite números de streams nem nomes de faixas que não estejam na discografia acima. Se um dado contratual não está aqui, diga que precisa ser levantado.`;
+STREAMS REAIS POR ÁLBUM (base para cálculo de royalties — Spotify for Artists):
+${catDiscography()}
+
+NOTA: Você tem os streams acima, mas NÃO tem os splits/contratos individuais nem as taxas exatas. Use os streams para dimensionar o valor em jogo; sobre splits e contratos, fale de forma estrutural e diga o que precisa ser levantado. ${CAT_NOTE}`;
       }
 
       // ─── FINANCEIRO — streams, audiência, ROI estimado ──
@@ -178,7 +234,13 @@ ${numeros}
 ESTIMATIVAS (referência, não exatas):
 - Streams/mês Spotify estimados: ${listeners ? fmt(streamsMonth) : '?'}
 - Receita bruta Spotify estimada: ${listeners ? `USD ${fmt(revenueMonthUSD)}/mês` : '?'}
-- Estágio de carreira: ${identity?.careerStage || '?'} (afeta cachê e deals)`;
+- Estágio de carreira: ${identity?.careerStage || '?'} (afeta cachê e deals)
+
+STREAMS REAIS DO CATÁLOGO (Spotify for Artists — base para royalties, ~USD 0,003-0,005/stream):
+${catDiscography()}
+Análise por álbum (12 meses):
+${catAlbumAnalysis()}
+${CAT_NOTE}`;
       }
 
       // ─── BOOKING — geografia, cidades top ──
@@ -194,7 +256,11 @@ ESTIMATIVAS (referência, não exatas):
 ${cidades}
 
 Hometown: ${identity?.hometown || '?'}
-Estágio: ${identity?.careerStage || '?'} (impacta cachê médio)`;
+Estágio: ${identity?.careerStage || '?'} (impacta cachê médio)
+
+STREAMS POR GEOGRAFIA (Spotify for Artists — onde a demanda real está):
+${catGeography()}
+${CAT_NOTE}`;
       }
 
       // ─── ESTILISTA — moods, atividades, identidade visual, público ──

@@ -18,6 +18,7 @@ const platformsRoutes  = require('./routes/platforms');
 const reportsRoutes    = require('./routes/reports');
 const dnaRoutes        = require('./routes/dna');
 const statesRoutes     = require('./routes/states');
+const catalogRoutes    = require('./routes/catalog');
 const mvpRoutes        = require('./routes/mvp');
 
 const app  = express();
@@ -41,6 +42,7 @@ app.use('/api/platforms', platformsRoutes);
 app.use('/api/reports',   reportsRoutes);
 app.use('/api/dna',       dnaRoutes);
 app.use('/api/states',    statesRoutes);
+app.use('/api/catalog',   catalogRoutes);
 
 app.use('/api/mvp',       mvpRoutes);
 
