@@ -105,9 +105,9 @@ function todayLabel() {
 function trendColor(trend?: string | null) {
   if (!trend) return "var(--text-dim)";
   const t = trend.toLowerCase();
-  if (t.includes("gradual decline") || t.includes("decline") || t.includes("down")) return "#f59e0b";
-  if (t.includes("steep decline") || t.includes("falling"))                          return "#ef4444";
-  if (t.includes("growth") || t.includes("rising") || t.includes("up"))              return "#10b981";
+  if (t.includes("gradual decline") || t.includes("decline") || t.includes("down")) return "var(--warn)";
+  if (t.includes("steep decline") || t.includes("falling"))                          return "var(--bad)";
+  if (t.includes("growth") || t.includes("rising") || t.includes("up"))              return "var(--good)";
   return "var(--text-dim)";
 }
 

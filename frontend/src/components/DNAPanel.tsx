@@ -19,12 +19,13 @@ interface SonicProfile {
 interface DNATrack { name: string; bpm: number; energy: number; danceability: number; valence: number }
 interface DNAData { profile: SonicProfile | null; tracks: DNATrack[]; source: string }
 
+// Paleta estrita: gradiente dourado -> branco, sem cor fora do tema
 const BARS: { key: keyof SonicProfile; label: string; color: string }[] = [
-  { key: "energy",       label: "Energia",       color: "#fa243c" },
-  { key: "danceability", label: "Dançabilidade", color: "#30b0c0" },
-  { key: "valence",      label: "Positividade",  color: "#f59e0b" },
-  { key: "speechiness",  label: "Rap / Fala",    color: "#10b981" },
-  { key: "acousticness", label: "Acústico",      color: "#8b5cf6" },
+  { key: "energy",       label: "Energia",       color: "#d4af37" },
+  { key: "danceability", label: "Dançabilidade", color: "#b89530" },
+  { key: "valence",      label: "Positividade",  color: "#8a6d1f" },
+  { key: "speechiness",  label: "Rap / Fala",    color: "rgba(255,255,255,0.55)" },
+  { key: "acousticness", label: "Acústico",      color: "rgba(255,255,255,0.30)" },
 ];
 
 export function DNAPanel() {

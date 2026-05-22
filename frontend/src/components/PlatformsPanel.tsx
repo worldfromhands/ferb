@@ -32,7 +32,7 @@ function Metric({ icon, label, value }: { icon: React.ReactNode; label: string; 
 function MissingKey({ name, hint }: { name: string; hint: string }) {
   return (
     <div className="flex items-start gap-2 text-text-dim text-[13px]">
-      <KeyRound size={15} className="shrink-0 mt-0.5 text-amber-400/70" />
+      <KeyRound size={15} className="shrink-0 mt-0.5 text-primary/70" />
       <span>{name} aguarda chave — {hint}</span>
     </div>
   );
@@ -69,7 +69,7 @@ export function PlatformsPanel() {
           {/* YouTube */}
           <GlassCard>
             <div className="flex items-center gap-2 mb-4">
-              <Youtube size={18} className="text-red-500" />
+              <Youtube size={18} className="text-primary" />
               <h3 className="text-white text-[15px] font-semibold">YouTube</h3>
             </div>
             {data?.youtubeConfigured && yt ? (
@@ -86,7 +86,7 @@ export function PlatformsPanel() {
           {/* Deezer */}
           <GlassCard>
             <div className="flex items-center gap-2 mb-4">
-              <Music size={18} className="text-[#a238ff]" />
+              <Music size={18} className="text-primary" />
               <h3 className="text-white text-[15px] font-semibold">Deezer</h3>
             </div>
             {dz ? (
@@ -103,7 +103,7 @@ export function PlatformsPanel() {
           {/* Last.fm */}
           <GlassCard>
             <div className="flex items-center gap-2 mb-4">
-              <Radio size={18} className="text-[#d51007]" />
+              <Radio size={18} className="text-primary" />
               <h3 className="text-white text-[15px] font-semibold">Last.fm</h3>
             </div>
             {data?.lastfmConfigured && lf ? (

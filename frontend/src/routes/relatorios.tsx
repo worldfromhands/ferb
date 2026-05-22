@@ -19,10 +19,10 @@ interface DailyReport {
 const API = "/api/reports/kyan";
 
 const STATUS_STYLE: Record<string, string> = {
-  good:     "bg-emerald-500/15 text-emerald-400",
-  ok:       "bg-emerald-500/15 text-emerald-400",
-  warning:  "bg-amber-500/15 text-amber-400",
-  critical: "bg-red-500/15 text-red-400",
+  good:     "bg-primary/15 text-primary",
+  ok:       "bg-primary/15 text-primary",
+  warning:  "bg-[#8a6d1f]/30 text-[#cda84a]",
+  critical: "bg-white/8 text-white/55",
 };
 const STATUS_LABEL: Record<string, string> = {
   good: "No rumo", ok: "No rumo", warning: "Atenção", critical: "Crítico",
@@ -66,7 +66,7 @@ function ReportCard({ r, featured }: { r: DailyReport; featured?: boolean }) {
                 <p className="text-text-dim text-[11px] truncate" title={m.label}>{m.label}</p>
                 <p className="text-white text-[15px] font-semibold">{fmt(m.value)}</p>
                 {m.delta != null && m.delta !== 0 && (
-                  <p className={["text-[11px] inline-flex items-center gap-0.5", up ? "text-emerald-400" : down ? "text-amber-400" : "text-text-dim"].join(" ")}>
+                  <p className={["text-[11px] inline-flex items-center gap-0.5", up ? "text-primary" : down ? "text-white/40" : "text-text-dim"].join(" ")}>
                     {up ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
                     {(m.delta > 0 ? "+" : "") + fmt(m.delta)}
                   </p>

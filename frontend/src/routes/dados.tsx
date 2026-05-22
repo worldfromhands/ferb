@@ -103,7 +103,7 @@ function Dados() {
           {/* Banner honesto se Chartmetric estiver fora */}
           {data && !data.available && (
             <GlassCard className="mb-6 flex items-start gap-3">
-              <AlertCircle size={20} className="text-amber-400 shrink-0 mt-0.5" />
+              <AlertCircle size={20} className="text-primary shrink-0 mt-0.5" />
               <div>
                 <p className="text-white text-[15px] font-medium">Dados do Chartmetric indisponíveis</p>
                 <p className="text-text-dim text-[14px] mt-1">
@@ -128,7 +128,7 @@ function Dados() {
                       {m.delta != null && (
                         <p className={[
                           "text-[13px] mt-1 inline-flex items-center gap-1",
-                          up ? "text-emerald-400" : down ? "text-amber-400" : "text-text-dim",
+                          up ? "text-primary" : down ? "text-white/40" : "text-text-dim",
                         ].join(" ")}>
                           {up ? <TrendingUp size={13} /> : down ? <TrendingDown size={13} /> : null}
                           {fmtDelta(m.delta)}

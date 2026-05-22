@@ -27,9 +27,9 @@ const PRIORITY_LABEL: Record<string, string> = {
   critica: "Crítica", alta: "Alta", media: "Média", baixa: "Baixa",
 };
 const PRIORITY_STYLE: Record<string, string> = {
-  critica: "bg-red-500/15 text-red-400",
-  alta:    "bg-amber-500/15 text-amber-400",
-  media:   "bg-sky-500/15 text-sky-400",
+  critica: "bg-primary/25 text-primary",
+  alta:    "bg-[#8a6d1f]/30 text-[#cda84a]",
+  media:   "bg-white/8 text-white/65",
   baixa:   "bg-white/8 text-text-dim",
 };
 const PRIORITY_RANK: Record<string, number> = { critica: 0, alta: 1, media: 2, baixa: 3 };
@@ -255,7 +255,7 @@ function Tarefas() {
                 {/* Deletar */}
                 <button
                   onClick={() => deleteTask.mutate(t.id)}
-                  className="shrink-0 text-text-dim/50 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
+                  className="shrink-0 text-text-dim/50 hover:text-white transition-colors opacity-0 group-hover:opacity-100"
                   title="Excluir tarefa"
                 >
                   <Trash2 size={16} />

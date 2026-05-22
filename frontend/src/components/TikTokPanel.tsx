@@ -98,12 +98,12 @@ export function TikTokPanel() {
 
       {/* Mensagem do callback */}
       {callbackMsg === "ok" && (
-        <div className="mb-3 flex items-center gap-2 text-emerald-400 text-[14px]">
+        <div className="mb-3 flex items-center gap-2 text-primary text-[14px]">
           <CheckCircle2 size={16} /> Conta do TikTok conectada com sucesso.
         </div>
       )}
       {callbackMsg === "erro" && (
-        <div className="mb-3 flex items-center gap-2 text-amber-400 text-[14px]">
+        <div className="mb-3 flex items-center gap-2 text-white/55 text-[14px]">
           <AlertCircle size={16} /> Não foi possível conectar o TikTok. Tente novamente.
         </div>
       )}
@@ -151,7 +151,7 @@ export function TikTokPanel() {
             </GlassCard>
           ) : snap?.error ? (
             <GlassCard className="flex items-start gap-3">
-              <AlertCircle size={20} className="text-amber-400 shrink-0 mt-0.5" />
+              <AlertCircle size={20} className="text-primary shrink-0 mt-0.5" />
               <div className="flex-1">
                 <p className="text-white text-[15px]">{snap.error}</p>
                 <a href="/api/tiktok/auth" className="text-primary text-[14px] hover:underline mt-1 inline-block">
@@ -180,7 +180,7 @@ export function TikTokPanel() {
                   <button
                     onClick={() => disconnect.mutate()}
                     disabled={disconnect.isPending}
-                    className="text-text-dim/60 hover:text-red-400 text-[13px] transition-colors shrink-0"
+                    className="text-text-dim/60 hover:text-white text-[13px] transition-colors shrink-0"
                   >
                     {disconnect.isPending ? "…" : "Desconectar"}
                   </button>

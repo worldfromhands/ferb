@@ -73,7 +73,7 @@ export function EmBreve({
               className={[
                 "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium",
                 backendReady
-                  ? "bg-emerald-500/15 text-emerald-400"
+                  ? "bg-primary/15 text-primary"
                   : "bg-white/8 text-text-dim",
               ].join(" ")}
             >

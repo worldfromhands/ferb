@@ -44,9 +44,9 @@ const OPP_STATUS_LABEL: Record<string, string> = {
   aberta: "Aberta", em_negociacao: "Em negociação", ganha: "Ganha", perdida: "Perdida",
 };
 const OPP_STATUS_STYLE: Record<string, string> = {
-  aberta:        "bg-sky-500/15 text-sky-400",
-  em_negociacao: "bg-amber-500/15 text-amber-400",
-  ganha:         "bg-emerald-500/15 text-emerald-400",
+  aberta:        "bg-white/8 text-white/70",
+  em_negociacao: "bg-[#8a6d1f]/25 text-[#cda84a]",
+  ganha:         "bg-primary/25 text-primary",
   perdida:       "bg-white/8 text-text-dim",
 };
 
@@ -214,11 +214,11 @@ function Relacoes() {
                               <Users size={11} /> {o.contact.name}
                             </span>
                           )}
-                          {fmtBRL(o.value) && <span className="text-emerald-400 text-[12px] font-medium">{fmtBRL(o.value)}</span>}
+                          {fmtBRL(o.value) && <span className="text-primary text-[12px] font-medium">{fmtBRL(o.value)}</span>}
                         </div>
                       </div>
                       <button onClick={() => deleteOpp.mutate(o.id)}
-                        className="shrink-0 text-text-dim/50 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100" title="Excluir">
+                        className="shrink-0 text-text-dim/50 hover:text-white transition-colors opacity-0 group-hover:opacity-100" title="Excluir">
                         <Trash2 size={16} />
                       </button>
                     </div>
@@ -285,7 +285,7 @@ function Relacoes() {
                       {c.notes && <p className="text-text-dim/80 text-[13px] mt-1">{c.notes}</p>}
                     </div>
                     <button onClick={() => deleteContact.mutate(c.id)}
-                      className="shrink-0 text-text-dim/50 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100" title="Excluir">
+                      className="shrink-0 text-text-dim/50 hover:text-white transition-colors opacity-0 group-hover:opacity-100" title="Excluir">
                       <Trash2 size={16} />
                     </button>
                   </div>

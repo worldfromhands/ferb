@@ -17,10 +17,10 @@ const MOOD_LABELS: Record<string, string> = {
 };
 
 const MOOD_COLORS: Record<string, string> = {
-  idle:     '#888',
-  thinking: '#f59e0b',
-  working:  '#fa243c',
-  happy:    '#10b981',
+  idle:     'rgba(255,255,255,0.45)',
+  thinking: '#8a6d1f',
+  working:  '#d4af37',
+  happy:    '#d4af37',
 };
 
 export function AgentCard({ agent, onClick }: { agent: Agent; onClick: () => void }) {

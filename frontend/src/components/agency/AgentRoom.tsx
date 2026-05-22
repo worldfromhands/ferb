@@ -126,10 +126,10 @@ export function AgentRoom({
     }
   }
 
-  const moodColor = agent.mood === 'happy' ? '#10b981'
-    : agent.mood === 'thinking' ? '#f59e0b'
-    : agent.mood === 'working'  ? '#fa243c'
-    : '#666';
+  const moodColor = agent.mood === 'happy' ? '#d4af37'
+    : agent.mood === 'thinking' ? '#8a6d1f'
+    : agent.mood === 'working'  ? '#d4af37'
+    : 'rgba(255,255,255,0.40)';
 
   return (
     <div className="agent-room">
