@@ -86,18 +86,26 @@ router.post('/demand/:agentId', async (req, res, next) => {
     const context      = await buildAgentContext(agentId);
     const systemPrompt = basePersona + context;
 
-    const userPrompt = `Você recebeu uma demanda:
+    const hoje = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+
+    const userPrompt = `Data de hoje: ${hoje}.
+
+Você recebeu uma demanda do KYAN:
 
 Título: "${title}"
 Descrição: "${description}"
 Prioridade: ${priority}
 Prazo: ${dueDate || 'Sem prazo definido'}
 
-Responda confirmando que entendeu, como vai abordar e quando pode entregar — use os dados reais do KYAN do seu contexto para fundamentar a resposta. Seja conciso, direto e específico.
+ENTREGUE A ANÁLISE AGORA. Não confirme que entendeu, não diga "vou cruzar os dados", não prometa entregar em 48 horas — responda a demanda de fato, neste momento, com a resposta completa.
 
-FORMATO OBRIGATÓRIO: texto corrido, sem asteriscos, sem negrito, sem emojis, sem marcadores. Só texto puro.`;
+Use os dados reais do KYAN que estão no seu contexto: cite cidades, faixas, métricas e números concretos. Se a demanda pede uma escolha (qual cidade, qual faixa, qual movimento), escolha — uma só — e defenda o porquê. Tenha opinião forte, não fique em cima do muro. Cada recomendação precisa ser acionável hoje e ter ação concreta. Cruze mais de uma fonte de dado sempre que possível.
 
-    const agentResponse = await ask(systemPrompt, userPrompt);
+REGRA ABSOLUTA — NUNCA INVENTE DADOS. Só cite nomes de faixas, álbuns, números de streams, cidades, percentuais ou fatos que estejam EXPLICITAMENTE no seu contexto acima. Se um dado não está no contexto, NÃO o invente — diga claramente "não tenho esse dado" e siga com o que você tem. Uma análise honesta sobre dado faltante vale mais que uma análise confiante sobre dado inventado. Se faltar algum dado, diga o que falta — mas mesmo assim entregue a melhor análise possível com o que você tem. Nunca empurre a resposta para depois.
+
+FORMATO OBRIGATÓRIO: texto corrido, sem asteriscos, sem negrito, sem emojis, sem marcadores. Só texto puro. Seja direto e denso — sem enrolação de abertura.`;
+
+    const agentResponse = await ask(systemPrompt, userPrompt, 1400);
 
     // Completa a demanda depois de 4–8s de "trabalho"
     const delay = 4000 + Math.random() * 4000;

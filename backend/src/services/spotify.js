@@ -158,13 +158,13 @@ async function searchTopTracks(artistName = 'Kyan', market = 'BR') {
       .filter(tr => tr.artists?.some(a => a.name.toLowerCase().includes('kyan')))
       .slice(0, 10);
 
+    // Nota: Spotify Dev Mode NÃO retorna `popularity` em tracks de search.
     return tracks.map(tr => ({
       id:          tr.id,
       name:        tr.name,
       album:       tr.album?.name,
       cover:       tr.album?.images?.[0]?.url || null,
       releaseDate: tr.album?.release_date,
-      popularity:  tr.popularity,
       durationMs:  tr.duration_ms,
       preview:     tr.preview_url,
       url:         tr.external_urls?.spotify,

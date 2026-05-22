@@ -7,11 +7,11 @@ function getClient() {
   client = new Anthropic({ apiKey });
   return client;
 }
-async function ask(systemPrompt, userPrompt) {
+async function ask(systemPrompt, userPrompt, maxTokens = 1200) {
   const anthropic = getClient();
   const resp = await anthropic.messages.create({
     model: 'claude-opus-4-5',
-    max_tokens: 300,
+    max_tokens: maxTokens,
     system: systemPrompt,
     messages: [{ role: 'user', content: userPrompt }],
   });

@@ -30,6 +30,8 @@ async function generateBriefing(agentId) {
 
 2) SUGESTÃO: Um movimento concreto que você recomendaria pro KYAN essa semana, ancorado no que você acabou de ver. Direto, executável, em até 2 frases.
 
+REGRA ABSOLUTA — só cite faixas, álbuns, cidades, números e fatos que estejam EXPLICITAMENTE no contexto acima. Nunca invente nomes de faixa nem números. Se não tem o dado, fale sem ele.
+
 FORMATO DE RESPOSTA — JSON puro, sem markdown, sem cercas de código:
 {"summary": "...", "suggestion": "..."}
 
