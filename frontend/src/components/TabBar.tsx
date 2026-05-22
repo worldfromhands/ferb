@@ -2,13 +2,13 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { MotionLogo } from "./MotionLogo";
 
 const tabs = [
-  { label: "Home",      to: "/" },
-  { label: "Agência",   to: "/agencia" },
-  { label: "Crítico",   to: "/critico" },
-  { label: "Dados",     to: "/dados" },
-  { label: "Tarefas",   to: "/tarefas" },
-  { label: "Catálogo",  to: "/catalogo" },
-  { label: "Relatórios",to: "/relatorios" },
+  { label: "Home",       to: "/",           ready: true  },
+  { label: "Agência",    to: "/agencia",    ready: true  },
+  { label: "Crítico",    to: "/critico",    ready: false },
+  { label: "Dados",      to: "/dados",      ready: false },
+  { label: "Tarefas",    to: "/tarefas",    ready: false },
+  { label: "Catálogo",   to: "/catalogo",   ready: false },
+  { label: "Relatórios", to: "/relatorios", ready: false },
 ];
 
 export function TabBar() {
@@ -27,12 +27,20 @@ export function TabBar() {
                 <li key={t.to}>
                   <Link
                     to={t.to}
+                    title={t.ready ? undefined : "Em breve"}
                     className={[
-                      "relative inline-flex items-center h-16 px-4 text-[14px] font-medium transition-colors",
+                      "relative inline-flex items-center gap-1.5 h-16 px-4 text-[14px] font-medium transition-colors",
                       active ? "text-white" : "text-text-dim hover:text-white",
                     ].join(" ")}
                   >
                     {t.label}
+                    {!t.ready && (
+                      <span
+                        aria-hidden
+                        className="h-1.5 w-1.5 rounded-full bg-white/25"
+                        title="Em breve"
+                      />
+                    )}
                     {active && (
                       <span className="absolute left-3 right-3 bottom-0 h-[2px] rounded-full bg-primary" />
                     )}
