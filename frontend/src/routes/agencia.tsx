@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { Users } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import { AgentCard } from "@/components/agency/AgentCard";
 import { AgentRoom } from "@/components/agency/AgentRoom";
+import { Concilio } from "@/components/agency/Concilio";
 import "@/styles/agency.css";
 
 export const Route = createFileRoute("/agencia")({
@@ -28,6 +30,7 @@ function Agency() {
   const [loading,      setLoading]      = useState(true);
   const [error,        setError]        = useState<string | null>(null);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+  const [showConcilio,  setShowConcilio]  = useState(false);
 
   async function loadLobby() {
     try {
@@ -50,6 +53,10 @@ function Agency() {
     return () => clearInterval(iv);
   }, []);
 
+  if (showConcilio) {
+    return <Concilio onBack={() => setShowConcilio(false)} />;
+  }
+
   if (selectedAgent) {
     return (
       <Shell>
@@ -66,12 +73,20 @@ function Agency() {
 
   return (
     <Shell>
-      <section className="mb-10">
-        <p className="text-text-dim text-sm uppercase tracking-[0.18em] mb-3">Agência Virtual</p>
-        <h1 className="text-white">Sua equipe está aqui.</h1>
-        <p className="text-text-dim text-[15px] mt-2">
-          Entre na sala de cada agente, dê demandas e receba respostas.
-        </p>
+      <section className="mb-10 flex items-start justify-between gap-4">
+        <div>
+          <p className="text-text-dim text-sm uppercase tracking-[0.18em] mb-3">Agência Virtual</p>
+          <h1 className="text-white">Sua equipe está aqui.</h1>
+          <p className="text-text-dim text-[15px] mt-2">
+            Entre na sala de cada agente, dê demandas e receba respostas.
+          </p>
+        </div>
+        <button
+          onClick={() => setShowConcilio(true)}
+          className="inline-flex items-center gap-2 bg-primary text-white rounded-xl px-4 py-2.5 text-[14px] font-medium hover:opacity-90 transition-opacity shrink-0"
+        >
+          <Users size={16} /> Reunir o Concílio
+        </button>
       </section>
 
       {loading && agents.length === 0 ? (

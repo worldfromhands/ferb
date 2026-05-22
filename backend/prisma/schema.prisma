@@ -156,3 +156,17 @@ model DailyReport {
 
   @@index([date])
 }
+
+// ─────────────────────────────────────────────────────
+// CONCÍLIO — os 9 agentes debatem uma questão
+// ─────────────────────────────────────────────────────
+
+model Council {
+  id        String   @id @default(uuid())
+  question  String                    // a questão levada ao concílio
+  takes     String                    // JSON: [{agentId, name, opinion}]
+  synthesis String                    // síntese final do Gerente
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}

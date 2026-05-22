@@ -186,4 +186,98 @@ router.get('/map/:artistId', async (req, res, next) => {
   }
 });
 
+// ─────────────────────────────────────────────────────
+// 6. CONCÍLIO — os 9 agentes debatem, o Gerente sintetiza
+// ─────────────────────────────────────────────────────
+
+// Ordem do concílio (Gerente fecha como síntese, então fica fora da rodada)
+const CONCILIO_AGENTS = [
+  'arandr', 'musicproducer', 'marketer', 'legal',
+  'finance', 'booking', 'stylist', 'techhacker',
+];
+
+router.post('/concilio/:artistId', async (req, res, next) => {
+  try {
+    const question = (req.body?.question || '').trim();
+    if (!question) {
+      return res.status(400).json({ error: 'Pergunta obrigatória' });
+    }
+
+    // 1. Pareceres dos especialistas — em paralelo
+    const takes = await Promise.all(
+      CONCILIO_AGENTS.map(async (agentId) => {
+        const agent = await prisma.agent.findUnique({ where: { id: agentId } });
+        const basePersona = AGENT_SYSTEM_PROMPTS[agentId] || AGENT_SYSTEM_PROMPTS.manager;
+        const context     = await buildAgentContext(agentId);
+        const userPrompt  = `O KYAN trouxe esta questão ao concílio da agência:
+
+"${question}"
+
+Dê seu parecer exclusivamente pela ótica da sua especialidade. Em até 3 frases, direto: o que você vê e o que recomenda. Use os dados reais do KYAN que estão no seu contexto. Sem markdown, sem asteriscos, sem emojis — texto puro.`;
+        let opinion;
+        try {
+          opinion = await ask(basePersona + context, userPrompt, 400);
+        } catch (e) {
+          opinion = `(${agent?.name || agentId} não pôde se manifestar agora.)`;
+        }
+        return { agentId, name: agent?.name || agentId, avatar: agent?.avatar || '', opinion };
+      })
+    );
+
+    // 2. Síntese do Gerente
+    const managerPersona = AGENT_SYSTEM_PROMPTS.manager;
+    const managerContext = await buildAgentContext('manager');
+    const pareceres = takes.map(t => `${t.name}: ${t.opinion}`).join('\n\n');
+    const synthPrompt = `O concílio da agência debateu a questão do KYAN:
+
+"${question}"
+
+Pareceres dos especialistas:
+
+${pareceres}
+
+Como Gerente, sintetize tudo numa recomendação final clara e decidida. Diga o que o KYAN deve fazer, integrando o que cada especialista trouxe. 4 a 6 frases. Aponte a direção — não fique em cima do muro. Sem markdown, sem asteriscos, sem emojis — texto puro.`;
+
+    let synthesis;
+    try {
+      synthesis = await ask(managerPersona + managerContext, synthPrompt, 700);
+    } catch (e) {
+      synthesis = 'A síntese do Gerente não pôde ser gerada agora.';
+    }
+
+    // 3. Persiste
+    const council = await prisma.council.create({
+      data: { question, takes: JSON.stringify(takes), synthesis },
+    });
+
+    res.json({
+      id: council.id,
+      question,
+      takes,
+      synthesis,
+      createdAt: council.createdAt,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/concilios/:artistId', async (req, res, next) => {
+  try {
+    const councils = await prisma.council.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 15,
+    });
+    res.json(councils.map(c => ({
+      id: c.id,
+      question: c.question,
+      takes: JSON.parse(c.takes),
+      synthesis: c.synthesis,
+      createdAt: c.createdAt,
+    })));
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
