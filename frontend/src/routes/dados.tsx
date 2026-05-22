@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import { GlassCard } from "@/components/GlassCard";
+import { TikTokPanel } from "@/components/TikTokPanel";
 
 export const Route = createFileRoute("/dados")({ component: Dados });
 
@@ -76,6 +77,9 @@ function Dados() {
           Atualizar
         </button>
       </section>
+
+      {/* TikTok — carrega independente do Chartmetric */}
+      <TikTokPanel />
 
       {isLoading ? (
         <div className="flex items-center gap-2 text-text-dim text-sm py-16 justify-center">

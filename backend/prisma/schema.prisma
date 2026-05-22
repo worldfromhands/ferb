@@ -109,3 +109,23 @@ model Opportunity {
   @@index([status])
   @@index([contactId])
 }
+
+// ─────────────────────────────────────────────────────
+// TIKTOK — token OAuth do artista (authorization_code flow)
+// Single-artist: guardamos uma linha por conta conectada.
+// ─────────────────────────────────────────────────────
+
+model TikTokAuth {
+  id               String   @id @default(uuid())
+  openId           String   @unique          // identificador da conta TikTok
+  accessToken      String
+  refreshToken     String
+  scope            String?                   // scopes concedidos
+  expiresAt        DateTime                  // expiração do access_token
+  refreshExpiresAt DateTime?                 // expiração do refresh_token
+  displayName      String?
+  avatarUrl        String?
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
