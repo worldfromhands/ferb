@@ -6,6 +6,7 @@ import {
 import { Shell } from "@/components/Shell";
 import { GlassCard } from "@/components/GlassCard";
 import { TikTokPanel } from "@/components/TikTokPanel";
+import { PlatformsPanel } from "@/components/PlatformsPanel";
 
 export const Route = createFileRoute("/dados")({ component: Dados });
 
@@ -78,7 +79,8 @@ function Dados() {
         </button>
       </section>
 
-      {/* TikTok — carrega independente do Chartmetric */}
+      {/* Plataformas + TikTok — carregam independente do Chartmetric */}
+      <PlatformsPanel />
       <TikTokPanel />
 
       {isLoading ? (

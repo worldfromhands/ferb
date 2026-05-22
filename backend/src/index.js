@@ -12,6 +12,7 @@ const relationsRoutes  = require('./routes/relations');
 const executionRoutes  = require('./routes/execution');
 const instagramRoutes  = require('./routes/instagram');
 const tiktokRoutes     = require('./routes/tiktok');
+const platformsRoutes  = require('./routes/platforms');
 const mvpRoutes        = require('./routes/mvp');
 
 const app  = express();
@@ -31,6 +32,7 @@ app.use('/api/audience',  audienceRoutes);
 app.use('/api/relations', relationsRoutes);
 app.use('/api/execution', executionRoutes);
 app.use('/api/tiktok',    tiktokRoutes);
+app.use('/api/platforms', platformsRoutes);
 
 app.use('/api/mvp',       mvpRoutes);
 
