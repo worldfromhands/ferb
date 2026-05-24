@@ -193,7 +193,7 @@ router.get('/map/:artistId', async (req, res, next) => {
 // Ordem do concílio (Gerente fecha como síntese, então fica fora da rodada)
 const CONCILIO_AGENTS = [
   'arandr', 'musicproducer', 'marketer', 'legal',
-  'finance', 'booking', 'stylist', 'techhacker',
+  'finance', 'booking', 'stylist', 'techhacker', 'socialmedia',
 ];
 
 router.post('/concilio/:artistId', async (req, res, next) => {

@@ -97,6 +97,16 @@ const AGENTS = [
     color: '#0ea5e9',
     room: 'Sala de Servidores',
   },
+  {
+    id: 'socialmedia',
+    name: 'Social Media',
+    title: 'Social Strategy',
+    specialty: 'Algoritmo, conteúdo e timing nas redes',
+    bio: 'Vive nas timelines. Conhece Instagram, TikTok e YouTube por dentro — sabe a janela certa e o gancho que segura o feed.',
+    avatar: '📱',
+    color: '#d4af37',
+    room: 'Central Social',
+  },
 ];
 
 const TASKS = [

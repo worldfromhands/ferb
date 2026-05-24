@@ -308,6 +308,40 @@ NOTA: Use o hometown e as cidades reais acima. Nunca invente origem, bairro ou c
 - CM rank: #${identity?.rank || '?'} | Trend: ${identity?.trend || '?'}
 - Top 5 cidades: ${topCities.length ? topCities.map(c => c.name).join(', ') : INDISP}`;
       }
+
+      // ─── SOCIAL MEDIA — Instagram/TikTok/YouTube, conteúdo, timing ──
+      case 'socialmedia': {
+        const [identity, ig, tt, ytStats] = await Promise.all([
+          safe(() => cm.getIdentitySnapshot(), null),
+          safe(() => cm.getInstagramStats(), null),
+          safe(() => cm.getTikTokStats(), null),
+          safe(() => require('../services/youtube').getChannelStats(), null),
+        ]);
+        const igFollowers = ig?.followers?.[0]?.value;
+        const igDelta     = ig?.followers?.[0]?.weekly_diff;
+        const ttFollowers = tt?.followers?.[0]?.value;
+        const ttLikes     = tt?.likes?.[0]?.value;
+        const ttRatio     = (ttFollowers && ttLikes) ? (ttLikes / ttFollowers).toFixed(1) + 'x likes/seguidor' : '?';
+
+        return `\n\nPRESENÇA DO KYAN NAS REDES (números reais):
+- Instagram: ${fmt(igFollowers)} seguidores${igDelta != null ? ` (${igDelta > 0 ? '+' : ''}${fmt(igDelta)} essa semana)` : ''}
+- TikTok: ${fmt(ttFollowers)} seguidores · ${fmt(ttLikes)} likes acumulados · ${ttRatio}
+- YouTube: ${fmt(ytStats?.subscribers)} inscritos · ${fmt(ytStats?.views)} views totais · ${fmt(ytStats?.videos)} vídeos
+- Gênero/cena: ${identity?.primaryGenre || '?'} · subgêneros: ${identity?.secondaryGenres?.join(', ') || '?'}
+- Moods do artista: ${identity?.moods?.join(', ') || '?'}
+
+GEOGRAFIA REAL (onde o conteúdo precisa ressoar):
+${catGeography()}
+
+ONDE O KYAN JÁ APARECE (playlists por alcance):
+${catPlaylists()}
+
+CATÁLOGO QUE ESTÁ PERFORMANDO (top streams — base do conteúdo viável):
+${catTopSongs(6)}
+
+NOTA: O FERB não tem acesso direto a trending topics em tempo real, métricas de Reels/Shorts por vídeo, watch-time nem Instagram Creator/Insights. Use os números acima para fundamentar timing, formato e direção de conteúdo — não invente números que não estão aqui.
+${CAT_NOTE}`;
+      }
     }
   } catch (e) {
     console.error('[agentContext] erro inesperado', agentId, e.message);
