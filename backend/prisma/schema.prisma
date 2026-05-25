@@ -170,3 +170,102 @@ model Council {
 
   @@index([createdAt])
 }
+
+// ─────────────────────────────────────────────────────
+// CENTRAL DE INTELIGÊNCIA — métricas diárias, baseline,
+// detecção de anomalia e análise automática por IA.
+// ─────────────────────────────────────────────────────
+
+model DailyMetric {
+  id                       String   @id @default(uuid())
+  date                     DateTime @unique
+
+  // Spotify (vários só vêm de CSV; ficam null sem upload do Spotify for Artists)
+  spotifyMonthlyListeners  Int?
+  spotifyStreams           Int?
+  spotifyPlaylistAdds      Int?
+  spotifySaves             Int?
+  spotifyFollowers         Int?
+  spotifySuperListeners    Int?
+  spotifyPopularity        Int?
+
+  // YouTube
+  youtubeSubscribers       Int?
+  youtubeViews             Int?
+
+  // Instagram / TikTok (via Chartmetric)
+  instagramFollowers       Int?
+  tiktokFollowers          Int?
+  tiktokLikes              Int?
+
+  // Outras plataformas
+  deezerFans               Int?
+  lastfmListeners          Int?
+  lastfmPlaycount          Int?
+
+  source                   String   @default("api")   // api | csv | manual
+  createdAt                DateTime @default(now())
+
+  @@index([date])
+}
+
+model BaselineSnapshot {
+  id           String   @id                  // ex.: "spotifyStreams_7d_avg"
+  type         String   @default("7d_avg")
+  metric       String
+  value        Float
+  calculatedAt DateTime @default(now())
+
+  @@index([metric, type])
+}
+
+model DetectedEvent {
+  id            String   @id @default(uuid())
+  type          String                       // spike_streams | drop_streams | viral_streams | ...
+  severity      String   @default("medium")  // low | medium | high | critical
+  platform      String                       // spotify | youtube | instagram | tiktok | all
+
+  title         String
+  description   String
+
+  metricName    String
+  currentValue  Float
+  baselineValue Float
+  changePct     Float
+
+  contextData   String?  @default("{}")      // JSON livre
+
+  status        String   @default("detected") // detected | analyzing | analyzed | actioned | dismissed
+  detectedAt    DateTime @default(now())
+
+  analysis      AutoAnalysis?
+
+  @@index([detectedAt])
+  @@index([status])
+}
+
+model AutoAnalysis {
+  id              String   @id @default(uuid())
+  eventId         String?  @unique
+
+  trigger         String                       // event | scheduled | manual
+  agentType       String                       // manager | marketer | arandr | techhacker | ...
+
+  summary         String
+  fullAnalysis    String
+  recommendations String   @default("[]")      // JSON array
+  contextUsed     String   @default("{}")      // JSON
+
+  modelUsed       String   @default("claude-opus-4-5")
+  tokensUsed      Int?
+
+  generatedAt     DateTime @default(now())
+
+  humanReview     String?                      // approved | rejected | modified
+  humanNotes      String?
+  reviewedAt      DateTime?
+
+  event           DetectedEvent? @relation(fields: [eventId], references: [id], onDelete: SetNull)
+
+  @@index([generatedAt])
+}

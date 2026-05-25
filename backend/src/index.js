@@ -7,6 +7,7 @@ const cron             = require('node-cron');
 const errorHandler     = require('./middleware/errorHandler');
 const placeholderRoutes = require('./routes/placeholder');
 const { runDailyReport } = require('./jobs/dailyReport');
+const { runIntelligenceCycle } = require('./jobs/intelligence');
 
 const homeRoutes       = require('./routes/home');
 const audienceRoutes   = require('./routes/audience');
@@ -19,6 +20,7 @@ const reportsRoutes    = require('./routes/reports');
 const dnaRoutes        = require('./routes/dna');
 const statesRoutes     = require('./routes/states');
 const catalogRoutes    = require('./routes/catalog');
+const intelligenceRoutes = require('./routes/intelligence');
 const mvpRoutes        = require('./routes/mvp');
 
 const app  = express();
@@ -43,6 +45,7 @@ app.use('/api/reports',   reportsRoutes);
 app.use('/api/dna',       dnaRoutes);
 app.use('/api/states',    statesRoutes);
 app.use('/api/catalog',   catalogRoutes);
+app.use('/api/intelligence', intelligenceRoutes);
 
 app.use('/api/mvp',       mvpRoutes);
 
@@ -56,10 +59,15 @@ app.use('/api/bureaucracy',   placeholderRoutes('BUROCRACIA'));
 
 app.use(errorHandler);
 
-// ─── Cron — relatório diário do FERB às 6:30 ───────────
-cron.schedule('30 6 * * *', () => {
+// ─── Cron — relatório diário + ciclo de inteligência (6:30) ───
+cron.schedule('30 6 * * *', async () => {
   console.log('[cron] disparando relatório diário das 6:30...');
-  runDailyReport().catch(e => console.error('[cron] dailyReport falhou:', e.message));
+  try {
+    await runDailyReport();
+    await runIntelligenceCycle();
+  } catch (e) {
+    console.error('[cron] falhou:', e.message);
+  }
 }, { timezone: 'America/Sao_Paulo' });
 
 app.listen(PORT, () => {

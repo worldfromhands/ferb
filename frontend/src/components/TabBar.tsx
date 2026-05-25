@@ -8,7 +8,7 @@ const tabs = [
   { label: "Relações",   to: "/relacoes",   ready: true  },
   { label: "Catálogo",   to: "/catalogo",   ready: true  },
   { label: "Relatórios", to: "/relatorios", ready: true  },
-  { label: "Crítico",    to: "/critico",    ready: false },
+  { label: "Crítico",    to: "/critico",    ready: true  },
 ];
 
 export function TabBar() {
