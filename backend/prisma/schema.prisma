@@ -181,7 +181,9 @@ model DailyMetric {
   date                     DateTime @unique
 
   // Spotify (vários só vêm de CSV; ficam null sem upload do Spotify for Artists)
+  spotifyListeners         Int?     // listeners do dia (CSV)
   spotifyMonthlyListeners  Int?
+  spotifyMonthlyActive     Int?     // monthly active listeners (CSV)
   spotifyStreams           Int?
   spotifyPlaylistAdds      Int?
   spotifySaves             Int?

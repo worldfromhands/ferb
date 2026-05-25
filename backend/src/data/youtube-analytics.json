@@ -1,0 +1,906 @@
+{
+  "meta": {
+    "capturedAt": "2026-05-25T02:20:44.458Z",
+    "source": "YouTube Studio CSV export (bundle 25/05/2026)",
+    "note": "Snapshot agregado. Timeseries diárias ficam no DailyMetric / fora deste arquivo."
+  },
+  "summary": {
+    "totalViews": 860443719,
+    "totalWatchHours": 36555524.2611,
+    "avgDuration": "0:02:34"
+  },
+  "topTracks": [
+    {
+      "title": "Avisa Lá Pt.3",
+      "views": 194958204,
+      "watchHours": 13821102.8776,
+      "avgDuration": "0:04:15"
+    },
+    {
+      "title": "Frutos",
+      "views": 64268962,
+      "watchHours": 1537335.3205,
+      "avgDuration": "0:01:27"
+    },
+    {
+      "title": "Mandona (Se eu te dissesse)",
+      "views": 43059029,
+      "watchHours": 1255113.0765,
+      "avgDuration": "0:01:46"
+    },
+    {
+      "title": "The Box Medley 2",
+      "views": 42496338,
+      "watchHours": 2058156.579,
+      "avgDuration": "0:02:54"
+    },
+    {
+      "title": "Preto e Dinheiro",
+      "views": 29563560,
+      "watchHours": 1340225.9938,
+      "avgDuration": "0:02:43"
+    },
+    {
+      "title": "TANG",
+      "views": 24309640,
+      "watchHours": 188074.7793,
+      "avgDuration": "0:00:29"
+    },
+    {
+      "title": "Nós é Ruim e o Cabelo Ajuda",
+      "views": 21901694,
+      "watchHours": 690587.9235,
+      "avgDuration": "0:01:53"
+    },
+    {
+      "title": "USD, é USD!",
+      "views": 18552058,
+      "watchHours": 412184.4554,
+      "avgDuration": "0:01:38"
+    },
+    {
+      "title": "Menor Magrinho",
+      "views": 17671582,
+      "watchHours": 576804.9863,
+      "avgDuration": "0:01:57"
+    },
+    {
+      "title": "O 7 Patrocina",
+      "views": 17249617,
+      "watchHours": 736168.5874,
+      "avgDuration": "0:02:33"
+    },
+    {
+      "title": "Mandrake",
+      "views": 11471158,
+      "watchHours": 257231.8649,
+      "avgDuration": "0:01:20"
+    },
+    {
+      "title": "Tropa da Lacoste",
+      "views": 11175201,
+      "watchHours": 317391.8664,
+      "avgDuration": "0:01:42"
+    },
+    {
+      "title": "Pretos No Topo",
+      "views": 10695219,
+      "watchHours": 788479.538,
+      "avgDuration": "0:04:25"
+    },
+    {
+      "title": "Primeiro Lugar do Pódio",
+      "views": 10544532,
+      "watchHours": 303238.6582,
+      "avgDuration": "0:01:43"
+    },
+    {
+      "title": "Baby Cê é Gata",
+      "views": 9974608,
+      "watchHours": 244318.6164,
+      "avgDuration": "0:01:34"
+    },
+    {
+      "title": "MAL INTENCIONADA (JÁ FOI, JÁ ERA)",
+      "views": 9619357,
+      "watchHours": 424577.4679,
+      "avgDuration": "0:02:39"
+    },
+    {
+      "title": "Arrasta Pra China",
+      "views": 9449061,
+      "watchHours": 308152.5299,
+      "avgDuration": "0:01:59"
+    },
+    {
+      "title": "Trap de Cria",
+      "views": 9428904,
+      "watchHours": 241816.0986,
+      "avgDuration": "0:01:32"
+    },
+    {
+      "title": "Versão Chave Djokovic",
+      "views": 9314636,
+      "watchHours": 326762.19,
+      "avgDuration": "0:02:06"
+    },
+    {
+      "title": "Trap de Cria 2",
+      "views": 8491561,
+      "watchHours": 297234.7383,
+      "avgDuration": "0:02:06"
+    },
+    {
+      "title": "Nego Raul",
+      "views": 8477575,
+      "watchHours": 780246.328,
+      "avgDuration": "0:05:33"
+    },
+    {
+      "title": "Contando Dinheiro",
+      "views": 8300534,
+      "watchHours": 280761.4428,
+      "avgDuration": "0:02:01"
+    },
+    {
+      "title": "BRAZIL",
+      "views": 7825383,
+      "watchHours": 264021.6487,
+      "avgDuration": "0:02:01"
+    },
+    {
+      "title": "brinks!",
+      "views": 7819917,
+      "watchHours": 275784.1614,
+      "avgDuration": "0:02:07"
+    },
+    {
+      "title": "Novos Ricos (Ao Vivo)",
+      "views": 7445604,
+      "watchHours": 299858.386,
+      "avgDuration": "0:02:26"
+    },
+    {
+      "title": "Eu Vim de Lá",
+      "views": 6958110,
+      "watchHours": 303383.9028,
+      "avgDuration": "0:02:36"
+    },
+    {
+      "title": "Fantástico Mundo da Oakley (Bonus Track)",
+      "views": 6778531,
+      "watchHours": 233000.1084,
+      "avgDuration": "0:02:04"
+    },
+    {
+      "title": "Trap de Gringo",
+      "views": 6101959,
+      "watchHours": 232678.8231,
+      "avgDuration": "0:02:17"
+    },
+    {
+      "title": "Chefin",
+      "views": 5868222,
+      "watchHours": 221098.9311,
+      "avgDuration": "0:02:15"
+    },
+    {
+      "title": "NÓIS TA FORGANO",
+      "views": 5107283,
+      "watchHours": 168843.7894,
+      "avgDuration": "0:01:59"
+    },
+    {
+      "title": "Visão de Cria",
+      "views": 5025870,
+      "watchHours": 300775.9596,
+      "avgDuration": "0:03:35"
+    },
+    {
+      "title": "CONSTRUA SEUS SONHOS",
+      "views": 5016339,
+      "watchHours": 65827.9609,
+      "avgDuration": "0:01:05"
+    },
+    {
+      "title": "Pente 270!",
+      "views": 4814287,
+      "watchHours": 204030.7133,
+      "avgDuration": "0:02:34"
+    },
+    {
+      "title": "Lembranças",
+      "views": 4807957,
+      "watchHours": 120340.66,
+      "avgDuration": "0:01:30"
+    },
+    {
+      "title": "Evoque",
+      "views": 4779511,
+      "watchHours": 140742.8116,
+      "avgDuration": "0:01:46"
+    },
+    {
+      "title": "Mini Game",
+      "views": 4515529,
+      "watchHours": 107273.9511,
+      "avgDuration": "0:01:25"
+    },
+    {
+      "title": "Rebola o Bundão",
+      "views": 4507834,
+      "watchHours": 150309.7457,
+      "avgDuration": "0:02:00"
+    },
+    {
+      "title": "tipo, sonho de consumo!",
+      "views": 4498432,
+      "watchHours": 118501.6079,
+      "avgDuration": "0:01:37"
+    },
+    {
+      "title": "MANDRAKA DO MOMENTO",
+      "views": 4317461,
+      "watchHours": 162147.4638,
+      "avgDuration": "0:02:15"
+    },
+    {
+      "title": "SÃO PAULO",
+      "views": 4310050,
+      "watchHours": 156505.2224,
+      "avgDuration": "0:02:10"
+    },
+    {
+      "title": "Resumo",
+      "views": 3849722,
+      "watchHours": 165754.4073,
+      "avgDuration": "0:02:36"
+    },
+    {
+      "title": "TRAP DE MALOKA",
+      "views": 3808074,
+      "watchHours": 212577.33,
+      "avgDuration": "0:03:21"
+    },
+    {
+      "title": "Vilão da Mídia!",
+      "views": 3790564,
+      "watchHours": 168260.1515,
+      "avgDuration": "0:02:40"
+    },
+    {
+      "title": "Paraíso Periférico",
+      "views": 3761378,
+      "watchHours": 156789.6632,
+      "avgDuration": "0:02:30"
+    },
+    {
+      "title": "Set Kapela - Elite de Malokeiro 2",
+      "views": 3350228,
+      "watchHours": 232704.5268,
+      "avgDuration": "0:04:10"
+    },
+    {
+      "title": "Nois faz a moda",
+      "views": 3343940,
+      "watchHours": 130778.9105,
+      "avgDuration": "0:02:20"
+    },
+    {
+      "title": "gucci con tacchini!",
+      "views": 3267974,
+      "watchHours": 104120.6204,
+      "avgDuration": "0:01:55"
+    },
+    {
+      "title": "Meninos do Hexa",
+      "views": 3133581,
+      "watchHours": 84221.3819,
+      "avgDuration": "0:01:36"
+    },
+    {
+      "title": "MENINO FATAL",
+      "views": 2887659,
+      "watchHours": 100407.5693,
+      "avgDuration": "0:02:05"
+    },
+    {
+      "title": "RANDANDAN",
+      "views": 2782510,
+      "watchHours": 92573.0075,
+      "avgDuration": "0:02:00"
+    }
+  ],
+  "topCountries": [
+    {
+      "code": "BR",
+      "views": 834999024,
+      "watchHours": 35694318.8153,
+      "share": "97.04%"
+    },
+    {
+      "code": "PT",
+      "views": 8847832,
+      "watchHours": 308488.6531,
+      "share": "1.03%"
+    },
+    {
+      "code": "US",
+      "views": 3980669,
+      "watchHours": 149063.2059,
+      "share": "0.46%"
+    },
+    {
+      "code": "JP",
+      "views": 1024576,
+      "watchHours": 38089.0364,
+      "share": "0.12%"
+    },
+    {
+      "code": "GB",
+      "views": 742182,
+      "watchHours": 30054.7394,
+      "share": "0.09%"
+    },
+    {
+      "code": "FR",
+      "views": 652534,
+      "watchHours": 22629.3422,
+      "share": "0.08%"
+    },
+    {
+      "code": "AO",
+      "views": 634191,
+      "watchHours": 21012.1122,
+      "share": "0.07%"
+    },
+    {
+      "code": "PY",
+      "views": 586671,
+      "watchHours": 24683.0609,
+      "share": "0.07%"
+    },
+    {
+      "code": "ES",
+      "views": 583334,
+      "watchHours": 22003.8454,
+      "share": "0.07%"
+    },
+    {
+      "code": "MZ",
+      "views": 508010,
+      "watchHours": 15905.508,
+      "share": "0.06%"
+    },
+    {
+      "code": "AR",
+      "views": 434813,
+      "watchHours": 13517.115,
+      "share": "0.05%"
+    },
+    {
+      "code": "IE",
+      "views": 310487,
+      "watchHours": 13471.7927,
+      "share": "0.04%"
+    },
+    {
+      "code": "IT",
+      "views": 302398,
+      "watchHours": 9660.6823,
+      "share": "0.04%"
+    },
+    {
+      "code": "IN",
+      "views": 299399,
+      "watchHours": 1489.1948,
+      "share": "0.03%"
+    },
+    {
+      "code": "UY",
+      "views": 295737,
+      "watchHours": 14086.8245,
+      "share": "0.03%"
+    },
+    {
+      "code": "DE",
+      "views": 249541,
+      "watchHours": 7169.8317,
+      "share": "0.03%"
+    },
+    {
+      "code": "CH",
+      "views": 246581,
+      "watchHours": 8830.1298,
+      "share": "0.03%"
+    },
+    {
+      "code": "CA",
+      "views": 224590,
+      "watchHours": 7943.7791,
+      "share": "0.03%"
+    },
+    {
+      "code": "AU",
+      "views": 224356,
+      "watchHours": 9126.5648,
+      "share": "0.03%"
+    },
+    {
+      "code": "BE",
+      "views": 191321,
+      "watchHours": 7758.7293,
+      "share": "0.02%"
+    },
+    {
+      "code": "CV",
+      "views": 164831,
+      "watchHours": 4925.2112,
+      "share": "0.02%"
+    },
+    {
+      "code": "NL",
+      "views": 150426,
+      "watchHours": 5641.3886,
+      "share": "0.02%"
+    },
+    {
+      "code": "MX",
+      "views": 130290,
+      "watchHours": 1991.2606,
+      "share": "0.02%"
+    },
+    {
+      "code": "CO",
+      "views": 105155,
+      "watchHours": 3277.7457,
+      "share": "0.01%"
+    },
+    {
+      "code": "ID",
+      "views": 94535,
+      "watchHours": 610.507,
+      "share": "0.01%"
+    },
+    {
+      "code": "BO",
+      "views": 84163,
+      "watchHours": 3639.0226,
+      "share": "0.01%"
+    },
+    {
+      "code": "CL",
+      "views": 76949,
+      "watchHours": 2482.9734,
+      "share": "0.01%"
+    },
+    {
+      "code": "RU",
+      "views": 68276,
+      "watchHours": 613.851,
+      "share": "0.01%"
+    },
+    {
+      "code": "BD",
+      "views": 65091,
+      "watchHours": 346.0308,
+      "share": "0.01%"
+    },
+    {
+      "code": "TR",
+      "views": 64829,
+      "watchHours": 832.5108,
+      "share": "0.01%"
+    }
+  ],
+  "trafficSources": [
+    {
+      "source": "Playlists",
+      "views": 384409983,
+      "watchHours": 18963917.5388,
+      "share": "44.68%"
+    },
+    {
+      "source": "Vídeos sugeridos",
+      "views": 161154976,
+      "watchHours": 7590963.8138,
+      "share": "18.73%"
+    },
+    {
+      "source": "Pesquisa do YouTube",
+      "views": 104131359,
+      "watchHours": 3943293.9277,
+      "share": "12.10%"
+    },
+    {
+      "source": "Recursos de navegação",
+      "views": 68490172,
+      "watchHours": 2883385.8467,
+      "share": "7.96%"
+    },
+    {
+      "source": "Feed dos Shorts",
+      "views": 58058173,
+      "watchHours": 315151.9002,
+      "share": "6.75%"
+    },
+    {
+      "source": "Outros recursos do YouTube",
+      "views": 47307058,
+      "watchHours": 2085526.8855,
+      "share": "5.50%"
+    },
+    {
+      "source": "Páginas do canal",
+      "views": 19110233,
+      "watchHours": 317698.1771,
+      "share": "2.22%"
+    },
+    {
+      "source": "Origem direta ou desconhecida",
+      "views": 10259177,
+      "watchHours": 308464.6313,
+      "share": "1.19%"
+    },
+    {
+      "source": "Externa",
+      "views": 2619868,
+      "watchHours": 65457.625,
+      "share": "0.30%"
+    },
+    {
+      "source": "Páginas de música",
+      "views": 2218037,
+      "watchHours": 13140.2428,
+      "share": "0.26%"
+    },
+    {
+      "source": "Telas finais",
+      "views": 1144937,
+      "watchHours": 34144.4415,
+      "share": "0.13%"
+    },
+    {
+      "source": "Notificações",
+      "views": 667085,
+      "watchHours": 16822.9671,
+      "share": "0.08%"
+    },
+    {
+      "source": "Publicidade no YouTube",
+      "views": 566865,
+      "watchHours": 11519.104,
+      "share": "0.07%"
+    },
+    {
+      "source": "Anotações e cards de vídeo",
+      "views": 225968,
+      "watchHours": 4908.535,
+      "share": "0.03%"
+    },
+    {
+      "source": "Páginas de hashtag",
+      "views": 76172,
+      "watchHours": 1094.0715,
+      "share": "0.01%"
+    },
+    {
+      "source": "Vídeo remixado",
+      "views": 1727,
+      "watchHours": 10.1505,
+      "share": "0.00%"
+    },
+    {
+      "source": "Shorts relacionados",
+      "views": 922,
+      "watchHours": 3.8005,
+      "share": "0.00%"
+    },
+    {
+      "source": "Cards de campanha",
+      "views": 913,
+      "watchHours": 20.2439,
+      "share": "0.00%"
+    },
+    {
+      "source": "Feed vertical ao vivo",
+      "views": 90,
+      "watchHours": 0.2563,
+      "share": "0.00%"
+    },
+    {
+      "source": "Redirecionamento em tempo real",
+      "views": 4,
+      "watchHours": 0.1019,
+      "share": "0.00%"
+    }
+  ],
+  "contentSplit": {
+    "videos": {
+      "views": 779914834,
+      "watchHours": 36111114.1918,
+      "avgDuration": "0:02:46",
+      "share": "90.64%"
+    },
+    "shorts": {
+      "views": 80527562,
+      "watchHours": 444343.3809,
+      "avgDuration": "0:00:22",
+      "share": "9.36%"
+    },
+    "lives": {
+      "views": 1323,
+      "watchHours": 66.6885,
+      "avgDuration": "0:03:01",
+      "share": "0.00%"
+    }
+  },
+  "playlists": [
+    {
+      "id": "PLOx5Y7Ftt73syEvOOzweSP9xnBxEXSv_J",
+      "title": "Som de Rua com Kyan",
+      "views": 1191959,
+      "watchHours": 44578.8113,
+      "starts": 318884,
+      "likes": 714
+    },
+    {
+      "id": "PLOx5Y7Ftt73s6ZajL5IIIt5m2FYnLmNSv",
+      "title": "Dias Antes de Mandrake",
+      "views": 1021658,
+      "watchHours": 31772.7093,
+      "starts": 265656,
+      "likes": 745
+    },
+    {
+      "id": "PLOx5Y7Ftt73tRzRXm5dH-5jXYZtStv69v",
+      "title": "UM Quebrada Inteligente",
+      "views": 898256,
+      "watchHours": 30514.479,
+      "starts": 281507,
+      "likes": 652
+    },
+    {
+      "id": "PLOx5Y7Ftt73u5GClI9SUD6OzIq7ZHkWwm",
+      "title": "Só Vilão, Aqui Não Tem Herói",
+      "views": 574200,
+      "watchHours": 23198.6618,
+      "starts": 154580,
+      "likes": 384
+    },
+    {
+      "id": "PLOx5Y7Ftt73ubV5JVDNKxJz7BWTSUW2Pf",
+      "title": "DOIS Quebrada Inteligente Pro MAX",
+      "views": 212248,
+      "watchHours": 9374.1099,
+      "starts": 65771,
+      "likes": 160
+    },
+    {
+      "id": "PLOx5Y7Ftt73tS1H9RiH_vAD8o5_2oy38O",
+      "title": "Kyan nos Feats",
+      "views": 120816,
+      "watchHours": 4565.9051,
+      "starts": 49409,
+      "likes": 90
+    },
+    {
+      "id": "PUyMaz2H2tHcc6avYIWqk2Sg",
+      "title": "Popular uploads",
+      "views": 46632,
+      "watchHours": 1479.3517,
+      "starts": 20333,
+      "likes": 0
+    },
+    {
+      "id": "PLOx5Y7Ftt73tPfF7i3hTsN9ZLMgSncUd1",
+      "title": "Universo Quebrada Inteligente",
+      "views": 16820,
+      "watchHours": 625.5784,
+      "starts": 3857,
+      "likes": 56
+    }
+  ],
+  "topPosts": [
+    {
+      "id": "UgkxTb98RhQhIDvDOmf5J4xKg-GBAo4pdtAJ",
+      "text": "Ela, Sol, Mar e Beck.",
+      "publishedAt": "Nov 30, 2024",
+      "impressions": 1005754,
+      "likes": 16427,
+      "likeRate": 1.58
+    },
+    {
+      "id": "Ugkx30Wni10UXQ2D4qPhpBX1zbyIjrvafdmq",
+      "text": "💍👰🏾‍♀️🤵🏾‍♂️",
+      "publishedAt": "Jul 3, 2025",
+      "impressions": 864450,
+      "likes": 13898,
+      "likeRate": 1.53
+    },
+    {
+      "id": "Ugkx8LUoIYwpDXeqU7zDMKIhdYvIXbtgslLj",
+      "text": "Dona da minha alegria ❤️",
+      "publishedAt": "Jan 21, 2025",
+      "impressions": 699719,
+      "likes": 14846,
+      "likeRate": 2.05
+    },
+    {
+      "id": "UgkxI4Pr8x_9_1Zeo7ZSW-tL0Ks0erNY05it",
+      "text": "O glorioso voltou! Santos sempre Santos 🤍🖤",
+      "publishedAt": "Nov 16, 2024",
+      "impressions": 404120,
+      "likes": 6408,
+      "likeRate": 1.52
+    },
+    {
+      "id": "Ugkx-1einhrDEXzMQb_vU8P_PJvisyZ79ugu",
+      "text": "Sem texto",
+      "publishedAt": "Oct 10, 2024",
+      "impressions": 401018,
+      "likes": 6533,
+      "likeRate": 1.56
+    },
+    {
+      "id": "UgkxvwFKyEG-wNKA2c6JLfSScz0cs7spqg4r",
+      "text": "Milão, 🇮🇹",
+      "publishedAt": "Jun 30, 2025",
+      "impressions": 368881,
+      "likes": 7788,
+      "likeRate": 2.02
+    },
+    {
+      "id": "UgkxkfusED7NnELH2uH8btmVRUIw9DQvRX6i",
+      "text": "Sem texto",
+      "publishedAt": "Mar 15, 2025",
+      "impressions": 364760,
+      "likes": 8047,
+      "likeRate": 2.1
+    },
+    {
+      "id": "UgkxGdZ5UT-GQhLlFw8ocKPVyStMuCn2VjbU",
+      "text": "Sem texto",
+      "publishedAt": "Nov 29, 2024",
+      "impressions": 336343,
+      "likes": 5506,
+      "likeRate": 1.57
+    },
+    {
+      "id": "UgkxvBWqFIb4myQFfnhxi_eBkjV0Vb-ZfA8Q",
+      "text": "🫡",
+      "publishedAt": "Dec 8, 2024",
+      "impressions": 274288,
+      "likes": 4667,
+      "likeRate": 1.61
+    },
+    {
+      "id": "Ugkx9EXAQrr3Zg-jOclxlep9U7Pzbq9OyjsH",
+      "text": "Até logo Brasil 🇧🇷",
+      "publishedAt": "Sep 18, 2024",
+      "impressions": 256808,
+      "likes": 4872,
+      "likeRate": 1.81
+    },
+    {
+      "id": "Ugkx2juKJZrWzMJEdX-aiJP_PUfVLkT-3Zfc",
+      "text": "U$ D 01/04",
+      "publishedAt": "Apr 1, 2025",
+      "impressions": 248389,
+      "likes": 5379,
+      "likeRate": 2.04
+    },
+    {
+      "id": "UgkxlbxDKQUIWgx80atJPqFFFWeStN9DKgEB",
+      "text": "Sem texto",
+      "publishedAt": "Dec 18, 2024",
+      "impressions": 238264,
+      "likes": 5882,
+      "likeRate": 2.36
+    },
+    {
+      "id": "UgkxVabSoJQYr1zXz04CeRVrjOFtn8-AloVZ",
+      "text": "Fora de cogitação ficar sem você👩🏾‍❤️‍💋‍👨🏾",
+      "publishedAt": "Nov 13, 2024",
+      "impressions": 232715,
+      "likes": 5551,
+      "likeRate": 2.3
+    },
+    {
+      "id": "UgyAIatV9lz3zeRtHBN4AaABCQ",
+      "text": "Essa quinta-feira tem mais um lançamento!\n\nKyan e Veigh\nJEITO BANDIDA",
+      "publishedAt": "Oct 4, 2021",
+      "impressions": 211131,
+      "likes": 4942,
+      "likeRate": 2.02
+    },
+    {
+      "id": "UgkxdvqMBWYw_PnOY9W3lsdE4RZQL8mfVpRB",
+      "text": "Até logo 🇫🇷",
+      "publishedAt": "Oct 17, 2024",
+      "impressions": 209274,
+      "likes": 3602,
+      "likeRate": 1.62
+    },
+    {
+      "id": "Ugx4T2ZwoggHpSBLWFl4AaABCQ",
+      "text": "“Adidas” \n\nÉ a nova música do Kyan que representa a parceria entre a marca Adidas e o mesmo e tem a colaboração com “MC Pedrinho”.\n\nConta com um vídeo clipe, apresentando os diversos itens variados da",
+      "publishedAt": "May 3, 2021",
+      "impressions": 201886,
+      "likes": 5367,
+      "likeRate": 1.89
+    },
+    {
+      "id": "UgkxkkzoFMIsxDUWJ0mgj3j-T4QLsE2WRZb7",
+      "text": "Sem texto",
+      "publishedAt": "Oct 8, 2024",
+      "impressions": 201360,
+      "likes": 4125,
+      "likeRate": 1.96
+    },
+    {
+      "id": "Ugkx-U7-_LNIgTMxPe6lr_Ex4VBxTKGVgvOu",
+      "text": "Antes de Mandrake, não existia a escolha entre Nike ou Adidas, não existia a possibilidade de recusar roupas da Lacoste, não existia milhões de views, milhões de seguidores, opinião influente, contrat",
+      "publishedAt": "Oct 7, 2022",
+      "impressions": 195038,
+      "likes": 5328,
+      "likeRate": 2.56
+    },
+    {
+      "id": "Ugkxj1o-49FV0MXzlK3AmLQm72TG2eEF2pNn",
+      "text": "Sem texto",
+      "publishedAt": "Apr 25, 2025",
+      "impressions": 191646,
+      "likes": 3775,
+      "likeRate": 1.85
+    },
+    {
+      "id": "Ugyl8LlBrRIcefh0oLR4AaABCQ",
+      "text": "Não vamos deixar o ritmo cair…\n\nQuinta-feira tem mais um lançamento para vocês! \n\nFEIO NUNCA 🤙🏾",
+      "publishedAt": "Sep 28, 2021",
+      "impressions": 185660,
+      "likes": 4295,
+      "likeRate": 1.81
+    },
+    {
+      "id": "Ugkxtii9otU64t0EyQL96SyUjCFpUqXyGiaa",
+      "text": "CENA2K25 👑",
+      "publishedAt": "Nov 26, 2025",
+      "impressions": 181571,
+      "likes": 2732,
+      "likeRate": 1.37
+    },
+    {
+      "id": "UgkxpbmRH5aaAdsCcEXNvvEpfiYtv9crq_3t",
+      "text": "❤️",
+      "publishedAt": "May 3, 2025",
+      "impressions": 178873,
+      "likes": 4135,
+      "likeRate": 2.19
+    },
+    {
+      "id": "UgkxU6AiS4fBwe899rJZqmZ5Lyin4g9ZAkht",
+      "text": "O que tão achando de U$D? Comenta ai",
+      "publishedAt": "Apr 4, 2025",
+      "impressions": 177192,
+      "likes": 4207,
+      "likeRate": 2.23
+    },
+    {
+      "id": "UgkxjsA0x79jbuHGWV-YOJaJkhjbT25fnNCj",
+      "text": "Irmandade 🤟🏾",
+      "publishedAt": "Jul 22, 2025",
+      "impressions": 171829,
+      "likes": 3842,
+      "likeRate": 2.11
+    },
+    {
+      "id": "Ugkx3p6EYirrVVnodzTj4mUknOcYhmWctN_o",
+      "text": "🤜🏽🤛🏽",
+      "publishedAt": "Jul 28, 2025",
+      "impressions": 163719,
+      "likes": 3584,
+      "likeRate": 2.05
+    }
+  ]
+}

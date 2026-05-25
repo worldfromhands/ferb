@@ -55,13 +55,27 @@ async function captureDailyMetric() {
   // Spotify per-day (streams, playlist_adds, saves, super_listeners) ficam null
   // — só vêm via CSV do Spotify for Artists. O detector pula métricas null.
 
+  // Smart-merge: NÃO sobrescreve campos diários do CSV com null da API.
+  // Se o CSV já preencheu hoje, o upsert preserva esses valores.
+  const CSV_ONLY = [
+    'spotifyListeners','spotifyMonthlyActive','spotifyStreams',
+    'spotifyPlaylistAdds','spotifySaves','spotifySuperListeners',
+  ];
+  const existing = await prisma.dailyMetric.findUnique({ where: { date: today } });
+  const merged = { ...data };
+  if (existing) {
+    for (const k of CSV_ONLY) {
+      if (merged[k] == null && existing[k] != null) merged[k] = existing[k];
+    }
+  }
+
   await prisma.dailyMetric.upsert({
     where:  { date: today },
-    update: data,
-    create: { date: today, ...data },
+    update: merged,
+    create: { date: today, ...merged },
   });
 
-  return data;
+  return merged;
 }
 
 // ── Ciclo completo ─────────────────────────────────────

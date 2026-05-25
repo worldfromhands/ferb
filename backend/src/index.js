@@ -21,6 +21,7 @@ const dnaRoutes        = require('./routes/dna');
 const statesRoutes     = require('./routes/states');
 const catalogRoutes    = require('./routes/catalog');
 const intelligenceRoutes = require('./routes/intelligence');
+const youtubeAnalyticsRoutes = require('./routes/youtube-analytics');
 const mvpRoutes        = require('./routes/mvp');
 
 const app  = express();
@@ -46,6 +47,7 @@ app.use('/api/dna',       dnaRoutes);
 app.use('/api/states',    statesRoutes);
 app.use('/api/catalog',   catalogRoutes);
 app.use('/api/intelligence', intelligenceRoutes);
+app.use('/api/youtube-analytics', youtubeAnalyticsRoutes);
 
 app.use('/api/mvp',       mvpRoutes);
 

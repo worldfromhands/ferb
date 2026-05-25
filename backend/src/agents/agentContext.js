@@ -10,6 +10,7 @@
 const cm = require('../services/chartmetric');
 const sp = require('../services/spotify');
 const { getCatalog } = require('../services/catalog');
+const yta = require('../services/youtubeAnalytics');
 
 function fmt(n) {
   if (n == null) return '?';
@@ -35,6 +36,65 @@ const catPlaylists = () =>
   (getCatalog().playlists?.byReach || []).slice(0, 8)
     .map(p => `- ${p.name}${p.editorial ? ' [editorial]' : ''} — reach ${fmt(p.reach)}`).join('\n');
 const CAT_NOTE = 'Fonte: Spotify for Artists, snapshot manual de 22/05/2026 (não atualiza sozinho).';
+
+// ── YOUTUBE — snapshot agregado do export YouTube Studio ──
+const YT_NOTE = 'Fonte: YouTube Studio CSV export (25/05/2026). Agregado acumulado.';
+function ytBlock(kind) {
+  const s = yta.summary();
+  if (!s) return '';
+
+  const header = `\n\nYOUTUBE — AGREGADO ACUMULADO:\n- Total: ${fmt(s.totalViews)} views · ${fmt(Math.round(s.totalWatchHours))}h assistidas · duração média ${s.avgDuration}\n`;
+
+  const blocks = {
+    manager: () => {
+      const cs = yta.contentSplit();
+      const countries = yta.topCountries(5);
+      const tracks = yta.topTracks(5);
+      return header
+        + `Split: vídeos longos ${cs.videos?.share || '?'} · Shorts ${cs.shorts?.share || '?'}\n`
+        + `Top países: ${countries.map(c => `${c.code} ${fmt(c.views)} (${c.share})`).join(' · ')}\n`
+        + `Top tracks YouTube: ${tracks.map(t => `${t.title} ${fmt(t.views)}`).join(' · ')}\n${YT_NOTE}`;
+    },
+    marketer: () => {
+      const src = yta.trafficSources().slice(0, 6);
+      const posts = yta.topPosts(4);
+      return header
+        + `Origem de tráfego:\n${src.map(t => `- ${t.source}: ${fmt(t.views)} (${t.share})`).join('\n')}\n`
+        + `Posts da comunidade com mais alcance:\n${posts.map(p => `- "${p.text.slice(0, 60)}" — ${fmt(p.impressions)} impressões / ${fmt(p.likes)} likes (${p.likeRate}%)`).join('\n')}\n${YT_NOTE}`;
+    },
+    socialmedia: () => {
+      const cs = yta.contentSplit();
+      const posts = yta.topPosts(5);
+      const src = yta.trafficSources().slice(0, 5);
+      return header
+        + `Tipo de conteúdo:\n- Vídeos longos: ${fmt(cs.videos?.views)} (${cs.videos?.share})\n- Shorts: ${fmt(cs.shorts?.views)} (${cs.shorts?.share})\n`
+        + `Origem de tráfego (sinais do algoritmo): ${src.map(t => `${t.source} ${t.share}`).join(' · ')}\n`
+        + `Posts da comunidade com mais engajamento:\n${posts.map(p => `- "${p.text.slice(0, 70)}" — ${fmt(p.impressions)} impressões / like rate ${p.likeRate}%`).join('\n')}\n${YT_NOTE}`;
+    },
+    arandr: () => {
+      const tracks = yta.topTracks(12);
+      const playlists = yta.playlists().slice(0, 6);
+      return header
+        + `Top 12 tracks por views no YouTube (potencial diferente do Spotify):\n${tracks.map((t, i) => `${i+1}. ${t.title} — ${fmt(t.views)} views, ${fmt(Math.round(t.watchHours))}h`).join('\n')}\n`
+        + `Playlists do canal (curadoria interna):\n${playlists.map(p => `- ${p.title}: ${fmt(p.views)} views, ${fmt(p.starts)} starts`).join('\n')}\n${YT_NOTE}`;
+    },
+    booking: () => {
+      const countries = yta.topCountries(15);
+      return header
+        + `Top 15 países por views no YouTube (geografia real onde o som chega):\n${countries.map((c, i) => `${i+1}. ${c.code}: ${fmt(c.views)} views (${c.share})`).join('\n')}\n${YT_NOTE}`;
+    },
+    techhacker: () => {
+      const src = yta.trafficSources();
+      const cs = yta.contentSplit();
+      const playlists = yta.playlists().slice(0, 5);
+      return header
+        + `Origem de tráfego completa:\n${src.map(t => `- ${t.source}: ${fmt(t.views)} (${t.share})`).join('\n')}\n`
+        + `Split por formato: vídeos ${cs.videos?.share} · Shorts ${cs.shorts?.share}\n`
+        + `Playlists internas com mais alcance:\n${playlists.map(p => `- ${p.title}: ${fmt(p.views)} views, ${fmt(p.starts)} starts`).join('\n')}\n${YT_NOTE}`;
+    },
+  };
+  return (blocks[kind] || (() => ''))();
+}
 
 // Isola cada chamada — se falhar, devolve o fallback em vez de derrubar tudo.
 async function safe(fn, fallback) {
@@ -87,7 +147,7 @@ Discografia (streams totais):
 ${catDiscography()}
 Análise dos álbuns (12 meses):
 ${catAlbumAnalysis()}
-${CAT_NOTE}`;
+${CAT_NOTE}${ytBlock('manager')}`;
       }
 
       // ─── PRODUTOR — catálogo, lançamentos, tracks ──
@@ -145,7 +205,7 @@ ${catGeography()}
 
 PLAYLISTS POR ALCANCE (onde o KYAN aparece):
 ${catPlaylists()}
-${CAT_NOTE}`;
+${CAT_NOTE}${ytBlock('marketer')}`;
       }
 
       // ─── A&R — catálogo, faixas, playlists, gêneros, artistas próximos ──
@@ -191,7 +251,7 @@ ${catAlbumAnalysis()}
 PLAYLISTS POR ALCANCE:
 ${catPlaylists()}
 
-${CAT_NOTE} Use estes streams reais para escolher faixas — nunca invente títulos nem números fora desta lista.`;
+${CAT_NOTE} Use estes streams reais para escolher faixas — nunca invente títulos nem números fora desta lista.${ytBlock('arandr')}`;
       }
 
       // ─── ADVOGADO — record label, status, discografia ──
@@ -260,7 +320,7 @@ Estágio: ${identity?.careerStage || '?'} (impacta cachê médio)
 
 STREAMS POR GEOGRAFIA (Spotify for Artists — onde a demanda real está):
 ${catGeography()}
-${CAT_NOTE}`;
+${CAT_NOTE}${ytBlock('booking')}`;
       }
 
       // ─── ESTILISTA — moods, atividades, identidade visual, público ──
@@ -306,7 +366,7 @@ NOTA: Use o hometown e as cidades reais acima. Nunca invente origem, bairro ou c
 - Instagram: ${fmt(get('Instagram (seg.)'))} (delta ${metrics.find(m => m.label === 'Instagram (seg.)')?.delta ?? '?'})
 - TikTok likes/seguidor ratio: ${ttRatio}
 - CM rank: #${identity?.rank || '?'} | Trend: ${identity?.trend || '?'}
-- Top 5 cidades: ${topCities.length ? topCities.map(c => c.name).join(', ') : INDISP}`;
+- Top 5 cidades: ${topCities.length ? topCities.map(c => c.name).join(', ') : INDISP}${ytBlock('techhacker')}`;
       }
 
       // ─── SOCIAL MEDIA — Instagram/TikTok/YouTube, conteúdo, timing ──
@@ -339,8 +399,8 @@ ${catPlaylists()}
 CATÁLOGO QUE ESTÁ PERFORMANDO (top streams — base do conteúdo viável):
 ${catTopSongs(6)}
 
-NOTA: O FERB não tem acesso direto a trending topics em tempo real, métricas de Reels/Shorts por vídeo, watch-time nem Instagram Creator/Insights. Use os números acima para fundamentar timing, formato e direção de conteúdo — não invente números que não estão aqui.
-${CAT_NOTE}`;
+NOTA: O FERB não tem acesso direto a trending topics em tempo real nem Instagram Creator/Insights. Mas agora você TEM o YouTube Studio agregado (abaixo) com tráfego, posts da comunidade e split de conteúdo — use isso pra fundamentar timing e formato.
+${CAT_NOTE}${ytBlock('socialmedia')}`;
       }
     }
   } catch (e) {
