@@ -1,673 +1,559 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import {
-  ArrowUpRight, ArrowDownRight, Sparkles, CheckCircle2,
-  Clock, RefreshCw, Loader2, Eye, MapPin, Disc3, ListMusic,
-  Users, Globe, TrendingDown, TrendingUp, Youtube as YoutubeIcon,
-} from "lucide-react";
-import { Shell } from "@/components/Shell";
-import { GlassCard, Badge } from "@/components/GlassCard";
-import { ArtistPhotos } from "@/components/ArtistPhotos";
-import { Button } from "@/components/ui/button";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
-export const Route = createFileRoute("/")({ component: Home });
+import stadiumEntry from "@/assets/stadium-entry.webp";
+import { TrophyBento } from "@/components/TrophyBento";
 
-// ── Types ────────────────────────────────────────────
-type Tone = "bad" | "warn" | "good";
+export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "EHXIS — Trophy Room" },
+      {
+        name: "description",
+        content:
+          "Sala de troféus da EHXIS — label brasileira de rap e trap. Artistas, marcos e números reais.",
+      },
+      { property: "og:title", content: "EHXIS — Trophy Room" },
+      {
+        property: "og:description",
+        content: "Artistas, marcos e números reais da EHXIS.",
+      },
+    ],
+  }),
+  component: Index,
+});
 
-interface Identity {
-  name: string;
-  image: string | null;
-  hometown: string | null;
-  rank: number | null;
-  score: number | null;
-  primaryGenre: string | null;
-  secondaryGenres: string[];
-  careerStage: string | null;
-  stageScore: number | null;
-  trend: string | null;
-  trendScore: number | null;
-  recordLabel: string | null;
-  booking: string | null;
-  description: string | null;
-  moods: string[];
-  activities: string[];
-}
-
-interface City   { name: string; listeners: number; country: string | null }
-interface Country { name: string; code: string | null; listeners: number; population: number; affinity: number }
-interface Album  { id?: string; name: string; release_date?: string; image_url?: string; label?: string }
-interface Playlist { name?: string; playlist_name?: string; followers?: number; url?: string }
-interface RelatedArtist { id?: string; name: string; image?: string; popularity?: number; followers?: number; genres?: string[] }
-interface SpotifyTrack { id: string; name: string; album?: string; cover?: string | null; popularity?: number; url?: string }
-
-interface CriticalItem  { message: string; status?: string }
-interface MetricChange  { label: string; value?: number; current?: number; delta?: number }
-interface AudienceMetric { group: string; label: string; value: number; delta: number | null; status: string }
-interface PendingTask   { title: string; priority?: string }
-interface Opportunity   { title: string; description?: string }
-
-interface YouTubeVideo {
-  id: string; title: string; thumbnail?: string;
-  views?: number; likes?: number; comments?: number;
-  publishedAt?: string; url?: string;
-}
-interface YouTubeChannel {
-  title?: string; thumbnail?: string; banner?: string;
-  subscribers?: number; views?: number; videos?: number;
-}
-interface YouTubeSnapshot { channel?: YouTubeChannel | null; videos?: YouTubeVideo[] }
-
-interface HomeReport {
-  summary?: string;
-  overallStatus?: string;
-  criticalItems?: CriticalItem[];
-  metricChanges?: MetricChange[];
-  audienceMetrics?: AudienceMetric[];
-  identity?: Identity | null;
-  topCities?: City[];
-  topCountries?: Country[];
-  albums?: Album[];
-  playlists?: Playlist[];
-  relatedArtists?: RelatedArtist[];
-  spotifyTopTracks?: SpotifyTrack[];
-  spotifyArtist?: { followers?: number; popularity?: number; genres?: string[] } | null;
-  spotifyConfigured?: boolean;
-  youtube?: YouTubeSnapshot | null;
-  youtubeConfigured?: boolean;
-  pendingTasks?: PendingTask[];
-  opportunities?: Opportunity[];
-  generatedAt?: string;
-}
-
-// ── Helpers ──────────────────────────────────────────
-function statusToTone(status?: string): Tone {
-  if (!status) return "warn";
-  if (status === "critical" || status === "critico") return "bad";
-  if (status === "warning"  || status === "alerta")  return "warn";
-  return "good";
-}
-function formatValue(v?: number) {
-  if (v == null) return "—";
-  if (v >= 1_000_000) return (v / 1_000_000).toFixed(1).replace(".", ",") + "M";
-  if (v >= 1_000)     return (v / 1_000).toFixed(0) + "k";
-  return v.toLocaleString("pt-BR");
-}
-function formatDelta(d?: number) {
-  if (d == null) return null;
-  const sign = d > 0 ? "+" : "";
-  return sign + d.toLocaleString("pt-BR");
-}
-function todayLabel() {
-  return new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" })
-    .replace(/^\w/, (c) => c.toUpperCase());
-}
-function trendColor(trend?: string | null) {
-  if (!trend) return "var(--text-dim)";
-  const t = trend.toLowerCase();
-  if (t.includes("gradual decline") || t.includes("decline") || t.includes("down")) return "var(--warn)";
-  if (t.includes("steep decline") || t.includes("falling"))                          return "var(--bad)";
-  if (t.includes("growth") || t.includes("rising") || t.includes("up"))              return "var(--good)";
-  return "var(--text-dim)";
-}
-
-// ── Data fetch ───────────────────────────────────────
-function useHomeReport() {
-  return useQuery<HomeReport>({
-    queryKey: ["home", "kyan"],
-    queryFn: async () => {
-      const r = await fetch("/api/home/kyan");
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      return r.json();
-    },
-    staleTime: 5 * 60 * 1000,
-    retry: 1,
-  });
-}
-
-// ── Component ────────────────────────────────────────
-function Home() {
-  const { data: report, isLoading, isError, refetch, isFetching } = useHomeReport();
-
-  const criticos    = (report?.criticalItems    ?? []).slice(0, 5);
-  const mudancas    = (report?.metricChanges    ?? []).slice(0, 6);
-  const audience    = (report?.audienceMetrics  ?? []);
-  const cidades     = (report?.topCities        ?? []).slice(0, 10);
-  const paises      = (report?.topCountries     ?? []).slice(0, 6);
-  const albums      = (report?.albums           ?? []).slice(0, 6);
-  const playlists   = (report?.playlists        ?? []).slice(0, 6);
-  const related     = (report?.relatedArtists   ?? []).slice(0, 6);
-  const topTracks   = (report?.spotifyTopTracks ?? []).slice(0, 5);
-  const tarefas     = (report?.pendingTasks     ?? []).slice(0, 4);
-  const oports      = (report?.opportunities    ?? []).slice(0, 3);
-
-  const maxListeners = cidades[0]?.listeners ?? 1;
-
+// ---------------- LOADER ----------------
+function Loader({ onEnter }: { onEnter: () => void }) {
+  const [opening, setOpening] = useState(false);
+  const handleClick = () => {
+    if (opening) return;
+    setOpening(true);
+    window.setTimeout(onEnter, 1600);
+  };
   return (
-    <Shell>
-      {/* ── Header ── */}
-      <section className="mb-16 flex items-start justify-between gap-4">
-        <div>
-          <p className="text-text-dim text-sm uppercase tracking-[0.18em] mb-4">{todayLabel()}</p>
-          <h1 className="text-white max-w-3xl">
-            {isLoading ? "Lendo o momento..." : "Bom dia. O que o dia está pedindo de você."}
-          </h1>
-        </div>
+    <div className="fixed inset-0 z-50 overflow-hidden bg-black font-mono text-white">
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${stadiumEntry})`,
+          transform: opening ? "scale(1.35)" : "scale(1.02)",
+          filter: opening ? "brightness(1.1)" : "brightness(0.9)",
+          transition:
+            "transform 1600ms cubic-bezier(0.65,0,0.35,1), filter 1600ms ease-out",
+          willChange: "transform, filter",
+        }}
+      />
+      <div
+        className="absolute inset-0 pointer-events-none transition-opacity duration-1000"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.55) 100%)",
+          opacity: opening ? 0 : 1,
+        }}
+      />
+      <div
+        className="absolute inset-0 pointer-events-none transition-opacity duration-700"
+        style={{
+          background:
+            "radial-gradient(circle at center, rgba(255,255,255,0.75) 0%, transparent 55%)",
+          opacity: opening ? 0.85 : 0,
+        }}
+      />
+      <div className="absolute top-8 left-8 text-[10px] tracking-[0.3em] uppercase opacity-85">
+        V—004 · matchday
+      </div>
+      <div className="absolute bottom-8 right-8 text-[10px] tracking-[0.3em] uppercase opacity-85">
+        {opening ? "ENTRANDO" : "↳ toque na logo pra entrar"}
+      </div>
+      <div className="absolute bottom-8 left-8 text-[10px] tracking-[0.3em] uppercase opacity-60">
+        ehxis · trophy room
+      </div>
+      <div className="absolute inset-0 flex items-center justify-center">
         <button
-          onClick={() => refetch()}
-          disabled={isFetching}
-          className="mt-2 shrink-0 flex items-center gap-2 rounded-full px-4 py-2 text-[13px] text-text-dim hover:text-white glass transition-colors disabled:opacity-50"
+          type="button"
+          onClick={handleClick}
+          aria-label="entrar na ehxis"
+          className="group relative cursor-pointer focus:outline-none bg-transparent border-0 p-0"
+          style={{
+            transform: opening ? "scale(1.25)" : "scale(1)",
+            opacity: opening ? 0 : 1,
+            transition:
+              "transform 1500ms cubic-bezier(0.65,0,0.35,1), opacity 800ms ease-out",
+          }}
         >
-          <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
-          Atualizar
+          <span
+            aria-label="ehxis"
+            className="block select-none text-white transition-transform duration-500 group-hover:scale-105"
+            style={{
+              fontFamily: "'Archivo Black', system-ui, sans-serif",
+              fontSize: "clamp(1rem, 2.4vw, 2rem)",
+              letterSpacing: "0.04em",
+              filter:
+                "drop-shadow(0 0 18px rgba(255,255,255,0.6)) drop-shadow(0 0 40px rgba(212,175,55,0.45))",
+            }}
+          >
+            EHXIS
+          </span>
         </button>
-      </section>
-
-      {/* ── BLOCO 1: QUEM VOCÊ É HOJE (identity) ── */}
-      {report?.identity && (
-        <section className="mb-16">
-          <GlassCard className="relative overflow-hidden">
-            <div className="flex flex-col lg:flex-row items-start gap-6">
-              {report.identity.image && (
-                <img
-                  src={report.identity.image}
-                  alt={report.identity.name}
-                  className="h-32 w-32 rounded-2xl object-cover shrink-0"
-                />
-              )}
-              <div className="flex-1">
-                <p className="text-text-dim text-[12px] uppercase tracking-wider mb-2">Quem você é hoje</p>
-                <h2 className="text-white text-[28px] font-semibold mb-1">{report.identity.name}</h2>
-                {report.identity.hometown && (
-                  <p className="text-text-dim text-[14px] mb-4">
-                    <MapPin className="inline h-3.5 w-3.5 mr-1" />
-                    {report.identity.hometown}
-                  </p>
-                )}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-                  <div>
-                    <p className="text-text-dim text-[11px] uppercase tracking-wider">Ranking mundial</p>
-                    <p className="text-white text-[20px] font-semibold mt-1">#{report.identity.rank?.toLocaleString("pt-BR") ?? "?"}</p>
-                  </div>
-                  <div>
-                    <p className="text-text-dim text-[11px] uppercase tracking-wider">Estágio</p>
-                    <p className="text-white text-[20px] font-semibold mt-1 capitalize">{report.identity.careerStage ?? "?"}</p>
-                    <p className="text-text-dim text-[11px]">{report.identity.stageScore}/100</p>
-                  </div>
-                  <div>
-                    <p className="text-text-dim text-[11px] uppercase tracking-wider">Tendência</p>
-                    <div className="flex items-center gap-1 mt-1">
-                      {report.identity.trend?.toLowerCase().includes("decline")
-                        ? <TrendingDown className="h-4 w-4" style={{ color: trendColor(report.identity.trend) }} />
-                        : <TrendingUp   className="h-4 w-4" style={{ color: trendColor(report.identity.trend) }} />}
-                      <p className="text-[14px] font-semibold capitalize" style={{ color: trendColor(report.identity.trend) }}>
-                        {report.identity.trend ?? "?"}
-                      </p>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-text-dim text-[11px] uppercase tracking-wider">Gênero</p>
-                    <p className="text-white text-[14px] font-medium mt-1">{report.identity.primaryGenre ?? "?"}</p>
-                    {report.identity.secondaryGenres.length > 0 && (
-                      <p className="text-text-dim text-[11px] mt-0.5 line-clamp-1">
-                        {report.identity.secondaryGenres.slice(0, 3).join(" · ")}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </GlassCard>
-        </section>
-      )}
-
-      {/* ── BLOCO 2: Leitura estratégica FERB ── */}
-      <section className="mb-16">
-        <GlassCard
-          className="relative overflow-hidden"
-          style={{ backgroundColor: "rgba(250, 36, 60, 0.08)" }}
-        >
-          <div className="flex items-start gap-4">
-            <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-              {isLoading || isFetching
-                ? <Loader2 className="h-5 w-5 text-primary animate-spin" />
-                : <Sparkles className="h-5 w-5 text-primary" />}
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <span className="text-primary text-[13px] font-semibold uppercase tracking-wider">
-                  Leitura do momento
-                </span>
-                {report?.generatedAt && (
-                  <Badge>
-                    {new Date(report.generatedAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
-                  </Badge>
-                )}
-              </div>
-              {isLoading ? (
-                <div className="space-y-3">
-                  <div className="h-7 w-3/4 rounded-xl bg-white/10 animate-pulse" />
-                  <div className="h-4 w-full rounded bg-white/6 animate-pulse" />
-                  <div className="h-4 w-5/6 rounded bg-white/6 animate-pulse" />
-                </div>
-              ) : isError ? (
-                <p className="text-text-dim text-[15px]">Não consegui gerar a análise agora. Backend offline?</p>
-              ) : (
-                <p className="text-white text-[17px] leading-relaxed font-medium max-w-3xl">
-                  {report?.summary ?? "Análise indisponível."}
-                </p>
-              )}
-              <div className="flex flex-wrap gap-3 mt-6">
-                <Button onClick={() => refetch()} disabled={isFetching}>
-                  {isFetching ? "Gerando..." : "↻ Nova análise"}
-                </Button>
-              </div>
-            </div>
-          </div>
-        </GlassCard>
-      </section>
-
-      {/* ── BLOCO 3: MÉTRICAS RÁPIDAS ── */}
-      <section className="mb-16">
-        <div className="flex items-end justify-between mb-8">
-          <h2 className="text-white">Pulse</h2>
-          <span className="text-text-dim text-[13px]">Chartmetric · ao vivo</span>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-          {isLoading
-            ? Array.from({ length: 6 }).map((_, i) => (
-                <GlassCard key={i} className="flex flex-col gap-3 !p-5">
-                  <div className="h-3 w-16 rounded bg-white/10 animate-pulse" />
-                  <div className="h-7 w-20 rounded-lg bg-white/10 animate-pulse" />
-                </GlassCard>
-              ))
-            : audience.map((m, i) => {
-                const up = (m.delta ?? 0) >= 0;
-                return (
-                  <GlassCard key={i} className="flex flex-col gap-2 !p-5">
-                    <span className="text-text-dim text-[10px] uppercase tracking-wider line-clamp-1">{m.label}</span>
-                    <p className="text-white text-[22px] font-semibold tracking-tight leading-none">
-                      {formatValue(m.value)}
-                    </p>
-                    {m.delta != null && m.delta !== 0 && (
-                      <div
-                        className="inline-flex items-center gap-0.5 text-[11px] font-medium"
-                        style={{ color: up ? "var(--good)" : "var(--bad)" }}
-                      >
-                        {up ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
-                        {formatDelta(m.delta)}
-                      </div>
-                    )}
-                  </GlassCard>
-                );
-              })}
-        </div>
-      </section>
-
-      {/* ── BLOCO 4: MAPA REGIONAL REAL — TOP CIDADES ── */}
-      {cidades.length > 0 && (
-        <section className="mb-16">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <h2 className="text-white">Mapa do seu público</h2>
-              <p className="text-text-dim text-[13px] mt-1">Top cidades por ouvintes mensais</p>
-            </div>
-            <Globe className="h-5 w-5 text-text-dim" />
-          </div>
-          <GlassCard className="!p-6">
-            <div className="space-y-3">
-              {cidades.map((c, i) => {
-                const pct = (c.listeners / maxListeners) * 100;
-                return (
-                  <div key={c.name} className="flex items-center gap-4">
-                    <span className="text-text-dim text-[13px] w-6">{i + 1}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex justify-between items-baseline mb-1">
-                        <p className="text-white text-[14px] font-medium truncate">{c.name}</p>
-                        <p className="text-text-dim text-[13px] tabular-nums shrink-0 ml-3">
-                          {c.listeners.toLocaleString("pt-BR")}
-                        </p>
-                      </div>
-                      <div className="h-1.5 rounded-full bg-white/8 overflow-hidden">
-                        <div
-                          className="h-full rounded-full transition-all"
-                          style={{
-                            width: `${pct}%`,
-                            backgroundColor: i === 0 ? "var(--primary)" : "rgba(255,255,255,0.4)",
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </GlassCard>
-        </section>
-      )}
-
-      {/* ── BLOCO 5: TOP PAÍSES ── */}
-      {paises.length > 0 && (
-        <section className="mb-16">
-          <div className="flex items-end justify-between mb-8">
-            <h2 className="text-white">Onde sua música chega</h2>
-            <span className="text-text-dim text-[13px]">Países</span>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {paises.map((p, i) => (
-              <GlassCard key={i} className="!p-4">
-                <p className="text-text-dim text-[11px] uppercase tracking-wider truncate">{p.name}</p>
-                <p className="text-white text-[20px] font-semibold mt-1">{formatValue(p.listeners)}</p>
-                <p className="text-text-dim text-[11px] mt-0.5">ouvintes</p>
-              </GlassCard>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ── BLOCO 6: ÚLTIMOS LANÇAMENTOS ── */}
-      {albums.length > 0 && (
-        <section className="mb-16">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <h2 className="text-white">Catálogo recente</h2>
-              <p className="text-text-dim text-[13px] mt-1">Seus últimos lançamentos</p>
-            </div>
-            <Disc3 className="h-5 w-5 text-text-dim" />
-          </div>
-          <GlassCard className="!p-0 overflow-hidden">
-            <ul className="divide-y divide-white/[0.06]">
-              {albums.map((a, i) => (
-                <li key={i} className="flex items-center gap-4 px-6 py-4 hover:bg-white/[0.04] transition-colors">
-                  <Disc3 className="h-4 w-4 text-text-dim shrink-0" />
-                  <p className="flex-1 text-white text-[14px] font-medium truncate">{a.name}</p>
-                  <p className="text-text-dim text-[12px] shrink-0">{a.release_date}</p>
-                </li>
-              ))}
-            </ul>
-          </GlassCard>
-        </section>
-      )}
-
-      {/* ── BLOCO 7: TOP TRACKS NO SPOTIFY ── */}
-      {topTracks.length > 0 && (
-        <section className="mb-16">
-          <div className="flex items-end justify-between mb-8">
-            <h2 className="text-white">Top no Spotify</h2>
-            <span className="text-text-dim text-[13px]">Mais ouvidas</span>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            {topTracks.map(t => (
-              <a
-                key={t.id}
-                href={t.url}
-                target="_blank"
-                rel="noreferrer"
-                className="group glass rounded-2xl p-3 hover:bg-white/[0.07] transition-colors"
-              >
-                {t.cover && (
-                  <img src={t.cover} alt={t.name} className="aspect-square w-full rounded-xl object-cover mb-3" />
-                )}
-                <p className="text-white text-[13px] font-medium line-clamp-2">{t.name}</p>
-                <p className="text-text-dim text-[11px] mt-1">Popularidade {t.popularity}</p>
-              </a>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ── BLOCO 7b: YOUTUBE ── */}
-      {report?.youtube?.channel && (
-        <section className="mb-16">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <h2 className="text-white">YouTube</h2>
-              <p className="text-text-dim text-[13px] mt-1">{report.youtube.channel.title}</p>
-            </div>
-            <YoutubeIcon className="h-5 w-5 text-text-dim" />
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-            <GlassCard className="!p-5">
-              <p className="text-text-dim text-[12px] uppercase tracking-wider">Inscritos</p>
-              <p className="text-white text-[26px] font-semibold mt-2">{formatValue(report.youtube.channel.subscribers)}</p>
-            </GlassCard>
-            <GlassCard className="!p-5">
-              <p className="text-text-dim text-[12px] uppercase tracking-wider">Visualizações totais</p>
-              <p className="text-white text-[26px] font-semibold mt-2">{formatValue(report.youtube.channel.views)}</p>
-            </GlassCard>
-            <GlassCard className="!p-5">
-              <p className="text-text-dim text-[12px] uppercase tracking-wider">Vídeos</p>
-              <p className="text-white text-[26px] font-semibold mt-2">{formatValue(report.youtube.channel.videos)}</p>
-            </GlassCard>
-          </div>
-          {(report.youtube.videos?.length ?? 0) > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {report.youtube.videos!.slice(0, 6).map(v => (
-                <a key={v.id} href={v.url} target="_blank" rel="noreferrer"
-                  className="group glass rounded-2xl p-3 hover:bg-white/[0.07] transition-colors">
-                  {v.thumbnail && (
-                    <img src={v.thumbnail} alt={v.title} className="aspect-video w-full rounded-xl object-cover mb-3" />
-                  )}
-                  <p className="text-white text-[13px] font-medium line-clamp-2 mb-1">{v.title}</p>
-                  <div className="flex gap-3 text-text-dim text-[11px]">
-                    <span>{formatValue(v.views)} views</span>
-                    <span>{formatValue(v.likes)} likes</span>
-                  </div>
-                </a>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* ── BLOCO 8: PLAYLISTS ATUAIS ── */}
-      {playlists.length > 0 && (
-        <section className="mb-16">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <h2 className="text-white">Playlists onde você está</h2>
-              <p className="text-text-dim text-[13px] mt-1">Maior alcance no Spotify hoje</p>
-            </div>
-            <ListMusic className="h-5 w-5 text-text-dim" />
-          </div>
-          <GlassCard className="!p-0 overflow-hidden">
-            <ul className="divide-y divide-white/[0.06]">
-              {playlists.map((p, i) => (
-                <li key={i} className="flex items-center gap-4 px-6 py-4 hover:bg-white/[0.04] transition-colors">
-                  <ListMusic className="h-4 w-4 text-text-dim shrink-0" />
-                  <p className="flex-1 text-white text-[14px] font-medium truncate">
-                    {p.name || p.playlist_name || "—"}
-                  </p>
-                  {p.followers != null && (
-                    <p className="text-text-dim text-[12px] shrink-0">{formatValue(p.followers)} followers</p>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </GlassCard>
-        </section>
-      )}
-
-      {/* ── BLOCO 9: ARTISTAS SIMILARES ── */}
-      {related.length > 0 && (
-        <section className="mb-16">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <h2 className="text-white">Quem está no seu campo</h2>
-              <p className="text-text-dim text-[13px] mt-1">Artistas similares de mercado</p>
-            </div>
-            <Users className="h-5 w-5 text-text-dim" />
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {related.map(r => (
-              <GlassCard key={r.name} className="!p-3">
-                {r.image && (
-                  <img src={r.image} alt={r.name} className="aspect-square w-full rounded-xl object-cover mb-2" />
-                )}
-                <p className="text-white text-[13px] font-medium line-clamp-1">{r.name}</p>
-                {r.followers != null && (
-                  <p className="text-text-dim text-[11px] mt-0.5">{formatValue(r.followers)}</p>
-                )}
-              </GlassCard>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ── BLOCO 10: Pontos de tensão ── */}
-      {(criticos.length > 0 || isLoading) && (
-        <section className="mb-16">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <h2 className="text-white">Pontos de tensão</h2>
-              <p className="text-text-dim text-[13px] mt-1">Onde a energia está represada</p>
-            </div>
-          </div>
-          <GlassCard className="p-0 overflow-hidden">
-            {isLoading ? (
-              <SkeletonList rows={3} />
-            ) : (
-              <ul className="divide-y divide-white/[0.06]">
-                {criticos.map((c, i) => {
-                  const tone = statusToTone(c.status);
-                  return (
-                    <li key={i} className="flex items-center gap-4 px-6 py-5 hover:bg-white/[0.04] transition-colors cursor-pointer">
-                      <div
-                        className="h-2 w-2 rounded-full shrink-0"
-                        style={{
-                          backgroundColor:
-                            tone === "bad" ? "var(--bad)" :
-                            tone === "warn" ? "var(--warn)" : "var(--good)",
-                        }}
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-white text-[15px] font-medium truncate">{c.message}</p>
-                      </div>
-                      <Eye className="h-4 w-4 text-text-dim shrink-0" />
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </GlassCard>
-        </section>
-      )}
-
-      {/* ── BLOCO 11: Métricas detalhadas Home (compat) ── */}
-      <section className="mb-16">
-        <div className="flex items-end justify-between mb-8">
-          <h2 className="text-white">Métricas-âncora</h2>
-          <span className="text-text-dim text-[13px]">Chartmetric</span>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {isLoading
-            ? Array.from({ length: 3 }).map((_, i) => (
-                <GlassCard key={i} className="flex flex-col gap-6">
-                  <div className="h-3 w-20 rounded bg-white/10 animate-pulse" />
-                  <div className="h-8 w-28 rounded-lg bg-white/10 animate-pulse" />
-                </GlassCard>
-              ))
-            : mudancas.map((m, i) => {
-                const val = m.current ?? m.value;
-                const up  = (m.delta ?? 0) >= 0;
-                return (
-                  <GlassCard key={i} className="flex flex-col gap-4">
-                    <span className="text-text-dim text-[13px] uppercase tracking-wider">{m.label}</span>
-                    <div>
-                      <p className="text-white text-[32px] font-semibold tracking-tight leading-none">
-                        {formatValue(val)}
-                      </p>
-                      {m.delta != null && (
-                        <div
-                          className="mt-3 inline-flex items-center gap-1 text-[13px] font-medium"
-                          style={{ color: up ? "var(--good)" : "var(--bad)" }}
-                        >
-                          {up ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
-                          {formatDelta(m.delta)}
-                        </div>
-                      )}
-                    </div>
-                  </GlassCard>
-                );
-              })}
-        </div>
-      </section>
-
-      {/* ── BLOCO 12: Fotos Instagram ── */}
-      <ArtistPhotos username="kyanmaloka" artistName="Kyan Maloka" />
-
-      {/* ── BLOCO 13: Tarefas + Oportunidades ── */}
-      <section>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <GlassCard>
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className="h-5 w-5 text-primary" />
-                <h2 className="text-white text-[22px] font-semibold">Tarefas</h2>
-              </div>
-              {tarefas.length > 0 && <Badge>{tarefas.length} abertas</Badge>}
-            </div>
-            {isLoading ? <SkeletonList rows={3} compact /> : (
-              <ul className="space-y-4">
-                {tarefas.map((t, i) => {
-                  const high = t.priority === "high" || t.priority === "critica" || t.priority === "alta";
-                  return (
-                    <li key={i} className="flex items-center gap-3">
-                      <div className="h-5 w-5 rounded-full border border-white/20 flex items-center justify-center shrink-0" />
-                      <span className="flex-1 text-[15px] text-white">{t.title}</span>
-                      {high && (
-                        <span className="inline-flex items-center gap-1 text-[11px] text-primary font-medium uppercase tracking-wide">
-                          <Clock className="h-3 w-3" /> agora
-                        </span>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </GlassCard>
-
-          <GlassCard>
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <Sparkles className="h-5 w-5 text-primary" />
-                <h2 className="text-white text-[22px] font-semibold">Oportunidades</h2>
-              </div>
-              <Badge>FERB vê</Badge>
-            </div>
-            {isLoading ? <SkeletonList rows={3} compact /> : (
-              <ul className="space-y-5">
-                {oports.map((o, i) => (
-                  <li key={i} className="group cursor-pointer">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <p className="text-white text-[15px] font-medium group-hover:text-primary transition-colors">{o.title}</p>
-                        {o.description && (
-                          <p className="text-text-dim text-[13px] mt-1">{o.description}</p>
-                        )}
-                      </div>
-                      <ArrowUpRight className="h-4 w-4 text-text-dim group-hover:text-primary transition-colors shrink-0 mt-1" />
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </GlassCard>
-        </div>
-      </section>
-    </Shell>
+      </div>
+    </div>
   );
 }
 
-function SkeletonList({ rows = 3, compact = false }: { rows?: number; compact?: boolean }) {
+// ---------------- STARFIELD ----------------
+function Starfield() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d")!;
+    let raf = 0;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const resize = () => {
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+    };
+    resize();
+    window.addEventListener("resize", resize);
+    const stars = Array.from({ length: 280 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      z: Math.random() * 1 + 0.2,
+      r: Math.random() * 1.4 + 0.2,
+      tw: Math.random() * Math.PI * 2,
+    }));
+    const draw = () => {
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for (const s of stars) {
+        s.tw += 0.015 * s.z;
+        const a = 0.4 + Math.abs(Math.sin(s.tw)) * 0.6;
+        ctx.fillStyle = `rgba(220,230,255,${a * s.z})`;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r * dpr, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
   return (
-    <div className={compact ? "space-y-4" : ""}>
-      {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className={`flex items-center gap-3 ${compact ? "" : "px-6 py-5"}`}>
-          <div className="h-2 w-2 rounded-full bg-white/10 animate-pulse shrink-0" />
-          <div className="flex-1 h-4 rounded bg-white/10 animate-pulse" />
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 z-0 pointer-events-none"
+    />
+  );
+}
+
+// ---------------- HUD CIRCLE ----------------
+const PILARES = [
+  "RAP",
+  "TRAP",
+  "QUEBRADA INTELIGENTE",
+  "STREAMING",
+  "BOOKING",
+  "AUDIOVISUAL",
+  "PERFORMANCE",
+  "MARCA",
+  "DADOS",
+  "FERB",
+  "TURNÊ",
+  "CASTING",
+];
+
+function HudCircle() {
+  return (
+    <div className="relative w-[min(720px,80vw)] aspect-square mx-auto">
+      <motion.div
+        aria-hidden
+        className="absolute inset-[14%] rounded-full pointer-events-none"
+        style={{
+          background:
+            "conic-gradient(from 0deg, rgba(212,175,55,0) 0deg, rgba(212,175,55,0) 320deg, rgba(212,175,55,0.18) 350deg, rgba(212,175,55,0.4) 360deg)",
+          maskImage: "radial-gradient(circle, black 60%, transparent 72%)",
+          WebkitMaskImage:
+            "radial-gradient(circle, black 60%, transparent 72%)",
+        }}
+        animate={{ rotate: 360 }}
+        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+      />
+      <motion.svg
+        viewBox="0 0 600 600"
+        className="absolute inset-0 w-full h-full"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 90, repeat: Infinity, ease: "linear" }}
+      >
+        <defs>
+          <path
+            id="ring-outer"
+            d="M 300,300 m -270,0 a 270,270 0 1,1 540,0 a 270,270 0 1,1 -540,0"
+          />
+        </defs>
+        <circle cx="300" cy="300" r="270" fill="none" stroke="rgba(220,230,255,0.18)" strokeWidth="0.5" />
+        <circle cx="300" cy="300" r="265" fill="none" stroke="rgba(220,230,255,0.08)" strokeWidth="0.5" strokeDasharray="2 4" />
+        <text fill="rgba(220,230,255,0.55)" fontSize="11" fontFamily="ui-monospace, monospace" letterSpacing="3">
+          <textPath href="#ring-outer" startOffset="0">
+            {PILARES.join(" · ") + " · "}
+          </textPath>
+        </text>
+      </motion.svg>
+
+      <motion.svg
+        viewBox="0 0 600 600"
+        className="absolute inset-0 w-full h-full"
+        animate={{ rotate: -360 }}
+        transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+      >
+        <circle cx="300" cy="300" r="200" fill="none" stroke="rgba(220,230,255,0.22)" strokeWidth="0.7" />
+        <circle cx="300" cy="300" r="195" fill="none" stroke="rgba(220,230,255,0.1)" strokeWidth="0.5" strokeDasharray="1 6" />
+        {Array.from({ length: 60 }).map((_, i) => (
+          <line
+            key={i}
+            x1={300 + Math.cos((i / 60) * Math.PI * 2) * 200}
+            y1={300 + Math.sin((i / 60) * Math.PI * 2) * 200}
+            x2={300 + Math.cos((i / 60) * Math.PI * 2) * (i % 5 === 0 ? 188 : 194)}
+            y2={300 + Math.sin((i / 60) * Math.PI * 2) * (i % 5 === 0 ? 188 : 194)}
+            stroke="rgba(220,230,255,0.4)"
+            strokeWidth="0.6"
+          />
+        ))}
+      </motion.svg>
+
+      <svg viewBox="0 0 600 600" className="absolute inset-0 w-full h-full">
+        <defs>
+          <radialGradient id="orb-grad" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stopColor="rgba(40,12,20,0.95)" />
+            <stop offset="60%" stopColor="rgba(8,4,6,1)" />
+            <stop offset="100%" stopColor="rgba(0,0,0,1)" />
+          </radialGradient>
+          <radialGradient id="orb-rim" cx="50%" cy="50%" r="50%">
+            <stop offset="85%" stopColor="rgba(212,175,55,0)" />
+            <stop offset="95%" stopColor="rgba(212,175,55,0.4)" />
+            <stop offset="100%" stopColor="rgba(212,175,55,0)" />
+          </radialGradient>
+        </defs>
+        <circle cx="300" cy="300" r="148" fill="none" stroke="rgba(220,230,255,0.2)" strokeWidth="0.6" />
+        <circle cx="300" cy="300" r="138" fill="none" stroke="rgba(220,230,255,0.1)" strokeWidth="0.5" strokeDasharray="2 5" />
+        <circle cx="300" cy="300" r="118" fill="url(#orb-grad)" stroke="rgba(212,175,55,0.5)" strokeWidth="0.9" />
+        <circle cx="300" cy="300" r="118" fill="url(#orb-rim)" />
+        {Array.from({ length: 48 }).map((_, i) => {
+          const a = (i / 48) * Math.PI * 2;
+          const r1 = 128;
+          const r2 = i % 4 === 0 ? 134 : 131;
+          return (
+            <line
+              key={i}
+              x1={300 + Math.cos(a) * r1}
+              y1={300 + Math.sin(a) * r1}
+              x2={300 + Math.cos(a) * r2}
+              y2={300 + Math.sin(a) * r2}
+              stroke="rgba(220,230,255,0.4)"
+              strokeWidth="0.5"
+            />
+          );
+        })}
+      </svg>
+
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <motion.span
+          className="select-none"
+          style={{
+            fontFamily: "'Archivo Black', system-ui, sans-serif",
+            fontSize: "clamp(0.7rem, 1.7vw, 1.5rem)",
+            letterSpacing: "0.06em",
+            color: "#fff",
+            filter:
+              "drop-shadow(0 0 12px rgba(212,175,55,0.55)) drop-shadow(0 0 28px rgba(212,175,55,0.25))",
+          }}
+          animate={{ scale: [1, 1.04, 1] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        >
+          EHXIS
+        </motion.span>
+      </div>
+
+      <div aria-hidden className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-0 w-[6%] h-px bg-white/20" />
+        <div className="absolute top-1/2 right-0 w-[6%] h-px bg-white/20" />
+        <div className="absolute left-1/2 top-0 h-[6%] w-px bg-white/20" />
+        <div className="absolute left-1/2 bottom-0 h-[6%] w-px bg-white/20" />
+      </div>
+    </div>
+  );
+}
+
+// ---------------- HUD FRAME ----------------
+function HudFrame() {
+  return (
+    <div aria-hidden className="fixed inset-0 z-30 pointer-events-none">
+      {[
+        "top-2 left-2",
+        "top-2 right-2",
+        "bottom-2 left-2",
+        "bottom-2 right-2",
+        "top-2 left-1/2 -translate-x-1/2",
+        "bottom-2 left-1/2 -translate-x-1/2",
+        "top-1/2 left-2 -translate-y-1/2",
+        "top-1/2 right-2 -translate-y-1/2",
+      ].map((p) => (
+        <div
+          key={p}
+          className={`absolute ${p} text-white/30 text-xs select-none`}
+        >
+          +
         </div>
       ))}
     </div>
+  );
+}
+
+// ---------------- PAGE ----------------
+function Index() {
+  const [loading, setLoading] = useState(true);
+  const [entered, setEntered] = useState(false);
+  const [time, setTime] = useState("");
+
+  useEffect(() => {
+    const tick = () => {
+      const d = new Date();
+      const hh = d.getHours().toString().padStart(2, "0");
+      const mm = d.getMinutes().toString().padStart(2, "0");
+      const ss = d.getSeconds().toString().padStart(2, "0");
+      setTime(`${hh}:${mm}:${ss} BRT`);
+    };
+    tick();
+    const i = setInterval(tick, 1000);
+    return () => clearInterval(i);
+  }, []);
+
+  const { scrollYProgress } = useScroll();
+  const heroY = useSpring(useTransform(scrollYProgress, [0, 0.3], [0, -120]), {
+    stiffness: 80,
+    damping: 20,
+  });
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
+
+  // FERB: pill nav aponta para as abas reais do app (não /about /contato como na referência)
+  const navLinks = [
+    { label: "Sala",       to: "/" },
+    { label: "Agência",    to: "/agencia" },
+    { label: "Dados",      to: "/dados" },
+    { label: "Catálogo",   to: "/catalogo" },
+    { label: "Relatórios", to: "/relatorios" },
+  ] as const;
+
+  return (
+    <>
+      {loading && (
+        <Loader
+          onEnter={() => {
+            setLoading(false);
+            setEntered(true);
+          }}
+        />
+      )}
+
+      <div
+        className={`relative min-h-screen w-full text-white transition-opacity duration-700 ${entered ? "opacity-100" : "opacity-0"}`}
+        style={{
+          fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, sans-serif",
+          backgroundColor: "#000",
+        }}
+      >
+        <Starfield />
+        <div
+          aria-hidden
+          className="fixed inset-0 z-0 pointer-events-none"
+          style={{
+            background: [
+              "radial-gradient(ellipse 60% 50% at 20% 30%, rgba(212,175,55,0.10), transparent 60%)",
+              "radial-gradient(ellipse 50% 60% at 80% 70%, rgba(60,45,10,0.18), transparent 60%)",
+              "radial-gradient(ellipse 80% 40% at 50% 110%, rgba(15,10,2,0.5), transparent 70%)",
+              "radial-gradient(ellipse 100% 60% at 50% -10%, rgba(0,0,0,0.6), transparent 70%)",
+            ].join(", "),
+          }}
+        />
+        <div
+          aria-hidden
+          className="fixed inset-0 z-0 pointer-events-none opacity-[0.06] mix-blend-overlay"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, rgba(255,255,255,0.5) 0 1px, transparent 1px 3px), repeating-linear-gradient(90deg, rgba(0,0,0,0.4) 0 1px, transparent 1px 3px)",
+          }}
+        />
+        <HudFrame />
+
+        {/* TOP NAV — pill flutuante (substitui a TabBar nesta tela) */}
+        <header className="fixed top-0 left-1/2 -translate-x-1/2 z-40 pt-4 pointer-events-none">
+          <div className="pointer-events-auto relative">
+            <nav className="flex items-center gap-0 px-2 py-1.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08)]">
+              {navLinks.map((l) => (
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  activeOptions={{ exact: true }}
+                  className="relative px-4 py-1.5 text-[12px] tracking-[0.15em] uppercase font-medium transition-all rounded-full text-white/55 hover:text-white"
+                  activeProps={{
+                    className:
+                      "relative px-4 py-1.5 text-[12px] tracking-[0.15em] uppercase font-medium transition-all rounded-full bg-white text-black",
+                  }}
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        </header>
+
+        {/* CONTACT bubble — aponta pro CRM (Relações) */}
+        <Link
+          to="/relacoes"
+          className="fixed bottom-6 right-6 z-40 size-24 rounded-full flex items-center justify-center font-mono text-[11px] tracking-[0.25em] text-white/90 hover:scale-105 transition-transform"
+          style={{
+            background:
+              "radial-gradient(circle at 35% 30%, rgba(212,175,55,0.9), rgba(45,32,8,0.95))",
+            boxShadow:
+              "inset -6px -6px 20px rgba(0,0,0,0.7), inset 4px 4px 18px rgba(255,225,150,0.2), 0 8px 30px rgba(212,175,55,0.4)",
+            border: "1px solid rgba(255,255,255,0.15)",
+          }}
+        >
+          CONTATO
+        </Link>
+
+        {/* ===== HERO ===== */}
+        <motion.section
+          style={{ y: heroY, opacity: heroOpacity }}
+          className="relative z-10 min-h-screen flex items-center justify-center px-6"
+        >
+          <div className="absolute top-20 left-8 font-mono text-[11px] tracking-[0.25em] text-white/70 leading-relaxed">
+            <div className="flex gap-6">
+              <span className="text-[#d4af37]">BRASIL</span>
+              <span>label · rap · trap</span>
+            </div>
+          </div>
+          <div className="absolute top-20 right-8 font-mono text-[11px] tracking-[0.2em] text-white/70">
+            {time}
+          </div>
+
+          <div className="absolute left-12 top-1/2 -translate-y-1/2 font-mono text-[11px] text-white/60">
+            <div>desde</div>
+            <div className="ml-8">2021 &lt;</div>
+          </div>
+          <div className="absolute right-12 top-1/2 -translate-y-1/2 font-mono text-[11px] tracking-[0.2em] text-white/70 text-right uppercase leading-relaxed">
+            CASA<br />FERRAMENTA<br />PLANO<br />DE JOGO
+          </div>
+
+          <HudCircle />
+
+          <h1
+            className="absolute bottom-16 left-8 leading-[0.9] tracking-[-0.02em] uppercase"
+            style={{
+              fontFamily: "'Archivo Black', system-ui, sans-serif",
+              fontSize: "clamp(2.5rem, 6vw, 5.5rem)",
+            }}
+          >
+            <span className="block text-white">EHXIS</span>
+            <span
+              className="block text-white/60 italic font-light normal-case"
+              style={{ fontFamily: "'Instrument Serif', serif" }}
+            >
+              trophy room
+            </span>
+          </h1>
+
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 font-mono text-[10px] tracking-[0.3em] text-white/40 uppercase">
+            ↓ desça · entre na sala
+          </div>
+        </motion.section>
+
+        {/* ===== TROPHIES BENTO ===== */}
+        <section className="relative z-10 px-6 py-32">
+          <div className="max-w-7xl mx-auto mb-12 flex items-end justify-between flex-wrap gap-6">
+            <div>
+              <div className="font-mono text-[10px] tracking-[0.4em] uppercase text-white/40 mb-3">
+                02 · sala de troféus
+              </div>
+              <h2
+                className="leading-none"
+                style={{
+                  fontFamily: "'Archivo Black', system-ui, sans-serif",
+                  fontSize: "clamp(2rem,5vw,4.5rem)",
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                números <span className="text-[#d4af37]">reais</span>,<br />
+                expostos como troféu.
+              </h2>
+            </div>
+            <div className="font-mono text-[10px] tracking-[0.3em] uppercase text-white/40 max-w-xs text-right">
+              clique em cada troféu · ficha técnica completa
+            </div>
+          </div>
+
+          <div className="max-w-7xl mx-auto">
+            <TrophyBento />
+          </div>
+        </section>
+
+        {/* ===== ABOUT TEASER ===== */}
+        <section className="relative z-10 px-6 py-32">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="font-mono text-[10px] tracking-[0.4em] uppercase text-white/40 mb-6">
+              03 · a casa
+            </div>
+            <h2
+              className="leading-[0.9] mb-8"
+              style={{
+                fontFamily: "'Archivo Black', system-ui, sans-serif",
+                fontSize: "clamp(2rem,5vw,4rem)",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              Hall da fama com a<br />
+              frieza de um <span className="text-[#d4af37]">estádio</span>.
+            </h2>
+            <p className="text-lg text-white/70 max-w-2xl mx-auto leading-relaxed">
+              Cada conquista da EHXIS exposta como troféu. Sem nostalgia, com
+              precisão de dados — o rap brasileiro do jeito que o rap brasileiro
+              merece.
+            </p>
+            {/* FERB: leva pra Agência, que é "a casa" operacional */}
+            <Link
+              to="/agencia"
+              className="inline-flex items-center gap-2 mt-10 px-6 py-3 rounded-full border border-white/15 text-white/90 hover:bg-white hover:text-black font-mono text-xs tracking-[0.25em] uppercase transition-all"
+            >
+              entrar na agência →
+            </Link>
+          </div>
+        </section>
+
+        {/* FOOTER */}
+        <footer className="relative z-10 px-6 py-12 border-t border-white/10">
+          <div className="max-w-7xl mx-auto flex items-end justify-between flex-wrap gap-4 font-mono text-[10px] uppercase tracking-[0.3em] text-white/40">
+            <div className="flex items-center gap-3">
+              <span
+                className="text-white text-base"
+                style={{
+                  fontFamily: "'Archivo Black', system-ui, sans-serif",
+                  letterSpacing: "0.06em",
+                }}
+              >
+                EHXIS
+              </span>
+              <span>rap & trap</span>
+            </div>
+            <span>© {new Date().getFullYear()} · todos os troféus reservados</span>
+          </div>
+        </footer>
+      </div>
+    </>
   );
 }

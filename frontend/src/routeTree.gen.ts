@@ -17,6 +17,7 @@ import { Route as CriticoRouteImport } from './routes/critico'
 import { Route as CatalogoRouteImport } from './routes/catalogo'
 import { Route as AgenciaRouteImport } from './routes/agencia'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TrofeuSlugRouteImport } from './routes/trofeu.$slug'
 
 const TarefasRoute = TarefasRouteImport.update({
   id: '/tarefas',
@@ -58,6 +59,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TrofeuSlugRoute = TrofeuSlugRouteImport.update({
+  id: '/trofeu/$slug',
+  path: '/trofeu/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/relacoes': typeof RelacoesRoute
   '/relatorios': typeof RelatoriosRoute
   '/tarefas': typeof TarefasRoute
+  '/trofeu/$slug': typeof TrofeuSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/relacoes': typeof RelacoesRoute
   '/relatorios': typeof RelatoriosRoute
   '/tarefas': typeof TarefasRoute
+  '/trofeu/$slug': typeof TrofeuSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/relacoes': typeof RelacoesRoute
   '/relatorios': typeof RelatoriosRoute
   '/tarefas': typeof TarefasRoute
+  '/trofeu/$slug': typeof TrofeuSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/relacoes'
     | '/relatorios'
     | '/tarefas'
+    | '/trofeu/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/relacoes'
     | '/relatorios'
     | '/tarefas'
+    | '/trofeu/$slug'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/relacoes'
     | '/relatorios'
     | '/tarefas'
+    | '/trofeu/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +144,7 @@ export interface RootRouteChildren {
   RelacoesRoute: typeof RelacoesRoute
   RelatoriosRoute: typeof RelatoriosRoute
   TarefasRoute: typeof TarefasRoute
+  TrofeuSlugRoute: typeof TrofeuSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/trofeu/$slug': {
+      id: '/trofeu/$slug'
+      path: '/trofeu/$slug'
+      fullPath: '/trofeu/$slug'
+      preLoaderRoute: typeof TrofeuSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   RelacoesRoute: RelacoesRoute,
   RelatoriosRoute: RelatoriosRoute,
   TarefasRoute: TarefasRoute,
+  TrofeuSlugRoute: TrofeuSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
